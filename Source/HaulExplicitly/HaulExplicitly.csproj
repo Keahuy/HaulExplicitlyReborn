@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net48</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>13</LangVersion>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <OutputPath>F:\Steam\steamapps\common\RimWorld\Mods\Haul Explicitly Rebron\Assemblies</OutputPath>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <OutputPath>F:\Steam\steamapps\common\RimWorld\Mods\Haul Explicitly Rebron\Assemblies</OutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Krafs.Rimworld.Ref" Version="1.6.4566" />
+      <PackageReference Include="Lib.Harmony" Version="2.4.1" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+    <name>Haul Explicitly Rebron</name>
+    <authors>
+        <li>likeafox</li>
+        <li>Keahuy</li>
+    </authors>
+    <packageId>Keahuy.HaulExplicitlyRebron</packageId>
+    <url>https://github.com/Keahuy/HaulExplicitly</url>
+    <supportedVersions>
+        <li>1.6</li>
+    </supportedVersions>
+    <modDependencies>
+        <li>
+            <packageId>brrainz.harmony</packageId>
+            <displayName>Harmony</displayName>
+            <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+            <downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases/latest</downloadUrl>
+        </li>
+    </modDependencies>
+    <!-- <incompatibleWith>
+    </incompatibleWith> -->
+    <description>Finer control over where your items go.</description>
+</ModMetaData>

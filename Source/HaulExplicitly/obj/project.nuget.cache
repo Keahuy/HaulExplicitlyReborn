@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "cOQUkgE/iRI=",
+  "success": true,
+  "projectFilePath": "F:\\Steam\\steamapps\\common\\RimWorld\\Mods\\Haul Explicitly Rebron\\Source\\HaulExplicitly\\HaulExplicitly.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Keahuy\\.nuget\\packages\\krafs.rimworld.ref\\1.6.4566\\krafs.rimworld.ref.1.6.4566.nupkg.sha512",
+    "C:\\Users\\Keahuy\\.nuget\\packages\\lib.harmony\\2.4.1\\lib.harmony.2.4.1.nupkg.sha512"
+  ],
+  "logs": []
+}

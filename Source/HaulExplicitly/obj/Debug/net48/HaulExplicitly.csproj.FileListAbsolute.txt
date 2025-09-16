@@ -1,0 +1,11 @@
+F:\_X\Rider\HaulExplicitly\obj\Debug\net48\HaulExplicitly.csproj.AssemblyReference.cache
+F:\_X\Rider\HaulExplicitly\obj\Debug\net48\HaulExplicitly.GeneratedMSBuildEditorConfig.editorconfig
+F:\_X\Rider\HaulExplicitly\obj\Debug\net48\HaulExplicitly.AssemblyInfoInputs.cache
+F:\_X\Rider\HaulExplicitly\obj\Debug\net48\HaulExplicitly.AssemblyInfo.cs
+F:\_X\Rider\HaulExplicitly\obj\Debug\net48\HaulExplicitly.csproj.CoreCompileInputs.cache
+F:\Steam\steamapps\common\RimWorld\Mods\Haul Explicitly Rebron\Assemblies\net48\HaulExplicitly.dll
+F:\Steam\steamapps\common\RimWorld\Mods\Haul Explicitly Rebron\Assemblies\net48\HaulExplicitly.pdb
+F:\_X\Rider\HaulExplicitly\obj\Debug\net48\HaulExpl.3EFCE6E4.Up2Date
+F:\_X\Rider\HaulExplicitly\obj\Debug\net48\HaulExplicitly.dll
+F:\_X\Rider\HaulExplicitly\obj\Debug\net48\HaulExplicitly.pdb
+F:\_X\Rider\HaulExplicitly\obj\Debug\net48\HaulExplicitly.sourcelink.json
