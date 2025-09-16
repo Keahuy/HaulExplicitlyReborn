@@ -1,6 +1,6 @@
 is_global = true
 build_property.RootNamespace = HaulExplicitly
-build_property.ProjectDir = F:\Steam\steamapps\common\RimWorld\Mods\Haul Explicitly Rebron\Source\HaulExplicitly\
+build_property.ProjectDir = F:\Steam\steamapps\common\RimWorld\Mods\HaulExplicitlyReborn\Source\HaulExplicitly\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.CsWinRTUseWindowsUIXamlProjections = false

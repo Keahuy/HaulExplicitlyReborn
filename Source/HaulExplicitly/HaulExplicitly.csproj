@@ -8,11 +8,11 @@
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-      <OutputPath>F:\Steam\steamapps\common\RimWorld\Mods\Haul Explicitly Rebron\Assemblies</OutputPath>
+      <OutputPath>F:\Steam\steamapps\common\RimWorld\Mods\HaulExplicitlyReborn\Assemblies\</OutputPath>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <OutputPath>F:\Steam\steamapps\common\RimWorld\Mods\Haul Explicitly Rebron\Assemblies</OutputPath>
+      <OutputPath>F:\Steam\steamapps\common\RimWorld\Mods\HaulExplicitlyReborn\Assemblies\</OutputPath>
     </PropertyGroup>
 
     <ItemGroup>

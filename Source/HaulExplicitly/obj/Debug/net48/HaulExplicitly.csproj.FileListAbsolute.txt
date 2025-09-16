@@ -9,3 +9,14 @@ F:\_X\Rider\HaulExplicitly\obj\Debug\net48\HaulExpl.3EFCE6E4.Up2Date
 F:\_X\Rider\HaulExplicitly\obj\Debug\net48\HaulExplicitly.dll
 F:\_X\Rider\HaulExplicitly\obj\Debug\net48\HaulExplicitly.pdb
 F:\_X\Rider\HaulExplicitly\obj\Debug\net48\HaulExplicitly.sourcelink.json
+F:\Steam\steamapps\common\RimWorld\Mods\HaulExplicitlyReborn\Source\HaulExplicitly\obj\Debug\net48\HaulExplicitly.csproj.AssemblyReference.cache
+F:\Steam\steamapps\common\RimWorld\Mods\HaulExplicitlyReborn\Source\HaulExplicitly\obj\Debug\net48\HaulExplicitly.GeneratedMSBuildEditorConfig.editorconfig
+F:\Steam\steamapps\common\RimWorld\Mods\HaulExplicitlyReborn\Source\HaulExplicitly\obj\Debug\net48\HaulExplicitly.AssemblyInfoInputs.cache
+F:\Steam\steamapps\common\RimWorld\Mods\HaulExplicitlyReborn\Source\HaulExplicitly\obj\Debug\net48\HaulExplicitly.AssemblyInfo.cs
+F:\Steam\steamapps\common\RimWorld\Mods\HaulExplicitlyReborn\Source\HaulExplicitly\obj\Debug\net48\HaulExplicitly.csproj.CoreCompileInputs.cache
+F:\Steam\steamapps\common\RimWorld\Mods\HaulExplicitlyReborn\Source\HaulExplicitly\obj\Debug\net48\HaulExplicitly.sourcelink.json
+F:\Steam\steamapps\common\RimWorld\Mods\HaulExplicitlyReborn\Source\HaulExplicitly\obj\Debug\net48\HaulExpl.3EFCE6E4.Up2Date
+F:\Steam\steamapps\common\RimWorld\Mods\HaulExplicitlyReborn\Source\HaulExplicitly\obj\Debug\net48\HaulExplicitly.dll
+F:\Steam\steamapps\common\RimWorld\Mods\HaulExplicitlyReborn\Source\HaulExplicitly\obj\Debug\net48\HaulExplicitly.pdb
+F:\Steam\steamapps\common\RimWorld\Mods\HaulExplicitlyReborn\Assemblies\net48\HaulExplicitly.dll
+F:\Steam\steamapps\common\RimWorld\Mods\HaulExplicitlyReborn\Assemblies\net48\HaulExplicitly.pdb
