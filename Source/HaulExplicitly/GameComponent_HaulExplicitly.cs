@@ -79,8 +79,7 @@ public class GameComponent_HaulExplicitly : GameComponent
             }
         }
 
-        if (manager.datas.Keys.Contains(data.ID))
-            throw new ArgumentException("Posting ID " + data.ID + " already exists in this manager.");
+        if (manager.datas.Keys.Contains(data.ID)) throw new ArgumentException("Data ID " + data.ID + " already exists in this manager.");
         manager.datas[data.ID] = data;
     }
 }

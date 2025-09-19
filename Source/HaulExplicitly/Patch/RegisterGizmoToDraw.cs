@@ -1,6 +1,8 @@
 ﻿using System.Reflection.Emit;
 using HarmonyLib;
+using HaulExplicitly.Gizmo;
 using JetBrains.Annotations;
+using RimWorld;
 using Verse;
 
 namespace HaulExplicitly.Patch;
@@ -14,12 +16,11 @@ public class ReverseDesignatorDatabase_InitDesignators_Patch
     [UsedImplicitly]
     static IEnumerable<CodeInstruction> AddDesignator(IEnumerable<CodeInstruction> instructions)
     {
-        var desListField = AccessTools.Field(typeof(Verse.ReverseDesignatorDatabase), "desList");
-        var targetCtor = AccessTools.Constructor(typeof(RimWorld.Designator_ExtractSkull), Type.EmptyTypes);
+        var desListField = AccessTools.Field(typeof(ReverseDesignatorDatabase), "desList");
+        var targetCtor = AccessTools.Constructor(typeof(Designator_ExtractSkull), Type.EmptyTypes);
         var listAddMethod = AccessTools.Method(typeof(List<Designator>), nameof(List<Designator>.Add), new[] { typeof(Designator) });
-        var RehaulCtor = AccessTools.Constructor(typeof(HaulExplicitly.Gizmo.Designator_Rehaul), Type.EmptyTypes);
-        var UnhaulCtor = AccessTools.Constructor(typeof(HaulExplicitly.Gizmo.Designator_Unhaul), Type.EmptyTypes);
-        var HaulExplicitlyCtor = AccessTools.Constructor(typeof(HaulExplicitly.Gizmo.Designator_HaulExplicitly), Type.EmptyTypes);
+        var RehaulCtor = AccessTools.Constructor(typeof(Designator_Rehaul), Type.EmptyTypes);
+        var UnhaulCtor = AccessTools.Constructor(typeof(Designator_Unhaul), Type.EmptyTypes);
 
         bool found1 = false;
         List<CodeInstruction> codes = new List<CodeInstruction>(instructions);
@@ -52,6 +53,24 @@ public class ReverseDesignatorDatabase_InitDesignators_Patch
                 /*Log.Error("HaulExplicitly: Gizmo Patch Succeed!");*/ // for testing
                 break;
             }
+        }
+    }
+}
+
+[HarmonyPatch(typeof(Thing), "GetGizmos")]
+class Thing_GetGizmos_Patch
+{
+    [HarmonyPostfix]
+    [UsedImplicitly]
+    static IEnumerable<Verse.Gizmo> AddHaulExplicitlyGizmos(IEnumerable<Verse.Gizmo> gizmos, Thing __instance)
+    {
+        foreach (Verse.Gizmo gizmo in gizmos)
+        {
+            yield return gizmo;
+        }
+        if (__instance.def.EverHaulable)
+        {
+            yield return new Designator_HaulExplicitly();
         }
     }
 }

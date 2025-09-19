@@ -69,13 +69,14 @@ public class JobDriver_HaulExplicitly : JobDriver
         this.FailOnDestroyedOrNull(TargetIndex.A);
         this.FailOnBurningImmobile(TargetIndex.B);
         this.FailOnForbidden(TargetIndex.A);
+        Thing thing = job.GetTarget(TargetIndex.A).Thing;
 
         Toil gotoThing = Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.ClosestTouch);
         gotoThing.FailOnSomeonePhysicallyInteracting(TargetIndex.A);
         gotoThing.FailOn(toil =>
         {
             Job job = toil.actor.CurJob;
-            Thing thing = job.GetTarget(TargetIndex.A).Thing;
+            
             IntVec3 dest = job.GetTarget(TargetIndex.B).Cell;
             List<Thing> itemsInCell = Data_DesignatorHaulExplicitly.GetItemsIfValidItemSpot(toil.actor.Map, dest);
             if (itemsInCell == null) return true;
@@ -93,5 +94,9 @@ public class JobDriver_HaulExplicitly : JobDriver
         Toil carryToDest = Toils_Haul.CarryHauledThingToCell(TargetIndex.B);
         yield return carryToDest;
         yield return Toils_HaulExplicitly.PlaceHauledThingAtDest(TargetIndex.B, carryToDest);
+        if (thing.def.EverHaulable)// 为目标物品打上anchor标志
+        {
+            Map.designationManager.AddDesignation(new Designation(thing, HaulExplicitlyDefOf.HaulExplicitly_Unhaul));
+        }
     }
 }

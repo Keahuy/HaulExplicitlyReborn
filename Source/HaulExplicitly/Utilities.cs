@@ -1,4 +1,5 @@
-﻿using Verse;
+﻿using HaulExplicitly.Gizmo;
+using Verse;
 
 namespace HaulExplicitly;
 
@@ -15,5 +16,14 @@ public static class Utilities
             }
         }
         return null;
+    }
+    
+    public static IEnumerable<Verse.Gizmo> GetHaulExplicitlyGizmos(Thing t)
+    {
+        if (t.def.EverHaulable)
+        {
+            yield return new Designator_HaulExplicitly();
+            
+        }
     }
 }

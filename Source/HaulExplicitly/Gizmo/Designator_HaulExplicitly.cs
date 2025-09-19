@@ -69,7 +69,7 @@ public class Designator_HaulExplicitly : Designator
     public override void DesignateSingleCell(IntVec3 c)
     {
         Data_DesignatorHaulExplicitly dataLocal = data ?? throw new InvalidOperationException();
-        data.TryMakeDestinations(UI.MouseMapPosition(), false);
+        dataLocal.TryMakeDestinations(UI.MouseMapPosition(), false);
         GameComponent_HaulExplicitly.RegisterData(dataLocal);
         ResetJob();
     }

@@ -16,22 +16,19 @@ public class Toils_HaulExplicitly
             Pawn actor = toil.actor;
             Job job = actor.CurJob;
             Thing target = job.GetTarget(haulxItemInd).Thing;
-            if (Toils_Haul.ErrorCheckForCarry(actor, target))
-                return;
+            if (Toils_Haul.ErrorCheckForCarry(actor, target)) return;
 
             Thing carriedItem = actor.carryTracker.CarriedThing;
             int targetInitialStackcount = target.stackCount;
-            int countToPickUp = Mathf.Min(
-                job.count - (carriedItem?.stackCount ?? 0),
-                actor.carryTracker.AvailableStackSpace(target.def),
-                targetInitialStackcount);
-            if (countToPickUp <= 0)
-                throw new Exception("PickUpThing countToPickUp = " + countToPickUp);
+            int countToPickUp = Mathf.Min(job.count - (carriedItem?.stackCount ?? 0), actor.carryTracker.AvailableStackSpace(target.def), targetInitialStackcount);
+            if (countToPickUp <= 0) throw new Exception("PickUpThing countToPickUp = " + countToPickUp);
 
             //pick up
             int countPickedUp = actor.carryTracker.TryStartCarry(target, countToPickUp);
             if (countPickedUp < targetInitialStackcount)
+            {
                 actor.Map.reservationManager.Release(target, actor, job);
+            }
             carriedItem = actor.carryTracker.CarriedThing;
             job.SetTarget(haulxItemInd, carriedItem);
             actor.records.Increment(RecordDefOf.ThingsHauled);
