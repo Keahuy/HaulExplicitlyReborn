@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using HaulExplicitly.Extension;
+using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.AI;
@@ -24,26 +25,20 @@ public class WorkGiver_HaulExplicitly : WorkGiver_Scanner
 
     public override Job? JobOnThing(Pawn pawn, Thing t, bool forced = false)
     {
-        if (!CanGetThing(pawn, t, forced)) 
-            return null;
-        if (!pawn.CanReserve(t)) 
-            return null;
+        if (!CanGetThing(pawn, t, forced)) return null;
+        if (!pawn.CanReserve(t)) return null;
 
         //plan count and destinations
-        Data_DesignatorHaulExplicitly? data = GameComponent_HaulExplicitly.GetManager(t).PostingWithItem(t);
-        if (data == null) 
-            return null;
+        Data_DesignatorHaulExplicitly? data = GameComponent_HaulExplicitly.GetManager(t).DataWithItem(t);
+        if (data == null) return null;
         int spaceRequest = AmountPawnWantsToPickUp(pawn, t, data); // 需要搬运的物品数
         var destinationsInfo = DeliverableDestinations.For(t, pawn, data);
         List<IntVec3> destinations = destinationsInfo.RequestSpaceForItemAmount(spaceRequest); // 目标地点当前可用格子
         int destinationSpaceAvailable = destinationsInfo.FreeSpaceInCells(destinations); // 目标地点当前承载能力
         var count = Math.Min(spaceRequest, destinationSpaceAvailable); // 可以向目标地点搬运 {count} 个物品
-        if (count < 1) 
-            return null;
-        if (destinations.Count == 0) // 如果目标地点所有可用格子都被别的pawn占用了
-            return null;
+        if (count < 1) return null;
+        if (destinations.Count == 0) return null;// 如果目标地点所有可用格子都被别的pawn占用了
         
-
         //make job
         JobDef jobDefOfHaulExplicitly = (JobDef)GenDefDatabase.GetDef(typeof(JobDef), "HaulExplicitly");
         Job job = new Job(jobDefOfHaulExplicitly, t, destinations.First())

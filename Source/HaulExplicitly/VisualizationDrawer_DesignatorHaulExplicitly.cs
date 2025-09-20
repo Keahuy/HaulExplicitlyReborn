@@ -19,7 +19,7 @@ public class HaulExplicitlyPostingVisualizationDrawer
         // Also note that this makes the later .PositionHeld/.Position distinction irrelevant
         if (!item.Spawned) return;
         var mgr = GameComponent_HaulExplicitly.GetManager(item);
-        Data_DesignatorHaulExplicitly? data = mgr.PostingWithItem(item);
+        Data_DesignatorHaulExplicitly? data = mgr.DataWithItem(item);
         if (data == null) return;
         //draw line
         Vector3 start = item

@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using HaulExplicitly.Extension;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -81,8 +82,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
     
     public bool TryRemoveItem(Thing t, bool playerCancelled = false)
     {
-        if (!Items.Contains(t))
-            return false;
+        if (!Items.Contains(t)) return false;
         InventoryRecord_DesignatorHaulExplicitly? ownerRecord = null;
         foreach (var record in Inventory)
         {
@@ -100,6 +100,10 @@ public class Data_DesignatorHaulExplicitly : IExposable
         }
 
         Items.Remove(t);
+        if (!t.GetIsInHaulExplicitlyDest())
+        {
+            t.SetDontMoved(false);
+        }
         return true;
     }
     
@@ -241,7 +245,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
         foreach (var cell in PossibleItemDestinationsAtCursor(cursor)) // 此步从鼠标所在格子开始迭代了整个地图的格子用来判断可用的格子
         {
             List<Thing>? itemsInCell = GetItemsIfValidItemSpot(Map, cell);
-            if (Map.reservationManager.IsReservedByAnyoneOf(cell, Faction.OfEntities) // 如果该格子被预定了
+            if (Map.reservationManager.IsReservedByAnyoneOf(cell, Faction.OfPlayer) // 如果该格子被预定了
                 || itemsInCell == null) continue;
             if (itemsInCell.Count == 0)
             {

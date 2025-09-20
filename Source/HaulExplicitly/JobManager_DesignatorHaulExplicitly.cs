@@ -45,7 +45,7 @@ public class JobManager_DesignatorHaulExplicitly : IExposable
         datas = new Dictionary<int, Data_DesignatorHaulExplicitly>();
     }
 
-    public Data_DesignatorHaulExplicitly? PostingWithItem(Thing item)
+    public Data_DesignatorHaulExplicitly? DataWithItem(Thing item)
     {
         return datas.Values.FirstOrDefault(posting => posting.Items.Contains(item));
     }

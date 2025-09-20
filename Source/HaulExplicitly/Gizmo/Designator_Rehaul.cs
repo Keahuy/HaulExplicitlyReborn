@@ -53,11 +53,13 @@ public class Designator_Rehaul : Designator
 
     public override void DesignateThing(Thing? t)
     {
-        if (t==null)
+        if (t == null)
         {
             Log.Error("HaulExplicitly: The target things is null when use Rehaul command.");
         }
+
         t?.SetDontMoved(false);
+        t?.SetIsInHaulExplicitlyDest(false); // 
         Map.designationManager.TryRemoveDesignationOn(t, HaulExplicitlyDefOf.HaulExplicitly_Unhaul);
     }
 }

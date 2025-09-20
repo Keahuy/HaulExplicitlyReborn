@@ -84,7 +84,7 @@ public class DeliverableDestinations
     {
         if (posting == null) //do the handholdy version of this function
         {
-            posting = GameComponent_HaulExplicitly.GetManager(item).PostingWithItem(item);
+            posting = GameComponent_HaulExplicitly.GetManager(item).DataWithItem(item);
             if (posting == null)
                 throw new ArgumentException();
         }

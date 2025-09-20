@@ -8,7 +8,7 @@ namespace HaulExplicitly;
 [UsedImplicitly]
 public class GameComponent_HaulExplicitly : GameComponent
 {
-    private static GameComponent_HaulExplicitly? _instance;// 于构造器中初始化
+    private static GameComponent_HaulExplicitly? _instance; // 于构造器中初始化
 
     private Dictionary<int, JobManager_DesignatorHaulExplicitly> managers = new();
 
@@ -21,13 +21,13 @@ public class GameComponent_HaulExplicitly : GameComponent
     {
         return _instance ?? throw new NullReferenceException("HaulExplicitly: GameComponent_HaulExplicitly is not instantiated yet.");
     }
-    
+
     public static List<JobManager_DesignatorHaulExplicitly> GetManagers()
     {
         var self = GetInstance();
         return self.managers.Values.ToList();
     }
-    
+
     public static JobManager_DesignatorHaulExplicitly GetManager(Thing t)
     {
         if (t.Map != null)
@@ -37,7 +37,7 @@ public class GameComponent_HaulExplicitly : GameComponent
 
         return (t.holdingOwner.Owner as Pawn)?.Map != null ? GetManager((t.holdingOwner.Owner as Pawn)?.Map!) : new JobManager_DesignatorHaulExplicitly();
     }
-    
+
     public static JobManager_DesignatorHaulExplicitly GetManager(Map map)
     {
         var self = GetInstance();
@@ -48,29 +48,31 @@ public class GameComponent_HaulExplicitly : GameComponent
         self.managers[map.uniqueID] = mgr;
         return mgr;
     }
-    
+
     internal static int GetNewHaulExplicitlyDataID()
     {
         GameComponent_HaulExplicitly self = GetInstance();
         var max = self.managers.Values.Aggregate(-1, (current, mgr) => mgr.datas.Values.Select(posting => posting.ID).Prepend(current).Max());
         return max + 1;
     }
-    
+
     public static void RegisterData(Data_DesignatorHaulExplicitly data)
     {
         JobManager_DesignatorHaulExplicitly manager = GetManager(data.Map);
         foreach (Thing i in data.Items)
         {
+            if (i is ThingWithComps twc && twc.GetComp<CompForbiddable>() != null)
             {
-                ThingWithComps? twc = i as ThingWithComps;
-                if (twc != null && twc.GetComp<CompForbiddable>() != null)
-                {
-                    i.SetForbidden(false);
-                }
+                i.SetForbidden(false);
             }
+
             if (!i.GetDontMoved())
             {
                 i.SetDontMoved(true);
+                if (i.MapHeld.designationManager.DesignationOn(i, HaulExplicitlyDefOf.HaulExplicitly_Unhaul) == null)
+                {
+                    i.MapHeld.designationManager.AddDesignation(new Designation(i, HaulExplicitlyDefOf.HaulExplicitly_Unhaul));
+                }
             }
 
             foreach (var p2 in manager.datas.Values)

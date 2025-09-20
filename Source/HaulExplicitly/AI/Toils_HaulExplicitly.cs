@@ -34,7 +34,6 @@ public class Toils_HaulExplicitly
             actor.records.Increment(RecordDefOf.ThingsHauled);
 
             //register the carried item (into the HaulExplicitly job)
-            carriedItem.SetDontMoved(true);
             var driver = (JobDriver_HaulExplicitly)actor.jobs.curDriver;
             driver.Data.TryAddItemSplinter(carriedItem);
 
@@ -91,14 +90,14 @@ public class Toils_HaulExplicitly
             Thing carriedItem = actor.carryTracker.CarriedThing;
             if (carriedItem == null)
             {
-                Log.Error(actor + " tried to place hauled thing in cell but is not hauling anything.");
+                Log.Error($" HaulExplicitly: {actor} tried to place hauled thing in cell but is not hauling anything.");
                 return;
             }
 
             int carryBeforeCount = carriedItem.stackCount;
             Job job = actor.CurJob;
             var driver = (JobDriver_HaulExplicitly)actor.jobs.curDriver;
-            driver.Init(); //this fixes problems
+            // driver.Init(); //this fixes problems
             Map map = driver.Data.Map;
             IntVec3 destination = job.GetTarget(destInd).Cell;
 
@@ -110,6 +109,7 @@ public class Toils_HaulExplicitly
                 job.count = 0;
                 driver.record.MovedQuantity += carryBeforeCount;
                 driver.Data.TryRemoveItem(carriedItem);
+                carriedItem.SetIsInHaulExplicitlyDest(true);
             }
             else
             {

@@ -55,12 +55,13 @@ public class Designator_Unhaul : Designator
 
     public override void DesignateThing(Thing? t)
     {
-        if (t==null)
+        if (t == null)
         {
             Log.Error("HaulExplicitly: The target things is null when use Unhaul command.");
+            return;
         }
 
-        t?.SetDontMoved(true);
+        t.SetDontMoved(true);
         // 为目标物品打上anchor标志
         Map.designationManager.AddDesignation(new Designation(t, Designation));
     }

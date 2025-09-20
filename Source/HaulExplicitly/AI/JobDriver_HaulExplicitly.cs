@@ -56,9 +56,18 @@ public class JobDriver_HaulExplicitly : JobDriver
         _record = _data.GetRecordWhichWithItem(targetItem);
     }
 
-    // 尝试占用目标，防止他人再与其互动
-    public override bool TryMakePreToilReservations(bool errorOnFailed)
+
+    public override bool TryMakePreToilReservations(bool errorOnFailed) // 尝试占用目标，防止他人再与其互动
     {
+        Thing thing = job.GetTarget(TargetIndex.A).Thing;
+        if (thing.def.EverHaulable) // 为目标物品打上anchor标志
+        {
+            if (Map.designationManager.DesignationOn(thing, HaulExplicitlyDefOf.HaulExplicitly_Unhaul) == null)
+            {
+                Map.designationManager.AddDesignation(new Designation(thing, HaulExplicitlyDefOf.HaulExplicitly_Unhaul));
+            }
+        }
+
         List<LocalTargetInfo> targets = [TargetA, TargetB];
         targets.AddRange(job.targetQueueB); // 🤔
         return targets.All(t => pawn.Reserve(t, job, 1, -1, null, errorOnFailed));
@@ -69,21 +78,20 @@ public class JobDriver_HaulExplicitly : JobDriver
         this.FailOnDestroyedOrNull(TargetIndex.A);
         this.FailOnBurningImmobile(TargetIndex.B);
         this.FailOnForbidden(TargetIndex.A);
-        Thing thing = job.GetTarget(TargetIndex.A).Thing;
 
         Toil gotoThing = Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.ClosestTouch);
         gotoThing.FailOnSomeonePhysicallyInteracting(TargetIndex.A);
         gotoThing.FailOn(toil =>
         {
-            Job job = toil.actor.CurJob;
-            
-            IntVec3 dest = job.GetTarget(TargetIndex.B).Cell;
-            List<Thing> itemsInCell = Data_DesignatorHaulExplicitly.GetItemsIfValidItemSpot(toil.actor.Map, dest);
+            Job actorCurJob = toil.actor.CurJob;
+
+            IntVec3 dest = actorCurJob.GetTarget(TargetIndex.B).Cell;
+            List<Thing>? itemsInCell = Data_DesignatorHaulExplicitly.GetItemsIfValidItemSpot(toil.actor.Map, dest);
             if (itemsInCell == null) return true;
             switch (itemsInCell.Count)
             {
                 case 0:
-                case 1 when thing.CanStackWith(itemsInCell.First()):
+                case 1 when actorCurJob.GetTarget(TargetIndex.A).Thing.CanStackWith(itemsInCell.First()):
                     return false;
                 default:
                     return true;
@@ -94,9 +102,5 @@ public class JobDriver_HaulExplicitly : JobDriver
         Toil carryToDest = Toils_Haul.CarryHauledThingToCell(TargetIndex.B);
         yield return carryToDest;
         yield return Toils_HaulExplicitly.PlaceHauledThingAtDest(TargetIndex.B, carryToDest);
-        if (thing.def.EverHaulable)// 为目标物品打上anchor标志
-        {
-            Map.designationManager.AddDesignation(new Designation(thing, HaulExplicitlyDefOf.HaulExplicitly_Unhaul));
-        }
     }
 }

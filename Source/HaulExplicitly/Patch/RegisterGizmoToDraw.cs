@@ -72,5 +72,13 @@ class Thing_GetGizmos_Patch
         {
             yield return new Designator_HaulExplicitly();
         }
+        if (Command_Cancel_HaulExplicitly.RelevantToThing(__instance))
+        {
+            yield return new Command_Cancel_HaulExplicitly(__instance);
+        }
+        if (Command_SelectAllForHaulExplicitly.RelevantToThing(__instance))
+        {
+            yield return new Command_SelectAllForHaulExplicitly();
+        }
     }
 }
