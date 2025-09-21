@@ -50,10 +50,10 @@ public class Designator_HaulExplicitly : Designator
     {
         // 理论上data在 Selected() 初始化过了 🤔
         if (data == null) return;
-        if (data.TryMakeDestinations(UI.MouseMapPosition()) && data.Destinations != null)
+        if (data.TryMakeDestinations(UI.MouseMapPosition()) && data.destinations != null)
         {
             float alt = AltitudeLayer.MetaOverlays.AltitudeFor();
-            foreach (IntVec3 d in data.Destinations)
+            foreach (IntVec3 d in data.destinations)
             {
                 Vector3 drawPos = d.ToVector3ShiftedWithAltitude(alt);
                 Graphics.DrawMesh(MeshPool.plane10, drawPos, Quaternion.identity, DesignatorUtility.DragHighlightThingMat, 0);
@@ -81,7 +81,7 @@ public class Designator_HaulExplicitly : Designator
     public override void DoExtraGuiControls(float leftX, float bottomY)
     {
         Data_DesignatorHaulExplicitly dataLocal = data ?? throw new InvalidOperationException();
-        var records = new List<InventoryRecord_DesignatorHaulExplicitly>(dataLocal.Inventory.OrderBy(r => r.Label));
+        var records = new List<InventoryRecord_DesignatorHaulExplicitly>(dataLocal.inventory.OrderBy(r => r.Label));
         const float max_height = 450f;
         const float width = 268f;
         const float row_height = 28f;

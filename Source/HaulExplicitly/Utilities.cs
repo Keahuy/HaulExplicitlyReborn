@@ -1,5 +1,6 @@
 ﻿using HaulExplicitly.Extension;
 using HaulExplicitly.Gizmo;
+using UnityEngine;
 using Verse;
 
 namespace HaulExplicitly;
@@ -25,6 +26,24 @@ public static class Utilities
         if (t.def.EverHaulable)
         {
             yield return new Designator_HaulExplicitly();
+        }
+    }
+    
+    public static void UpdataLabelAndIcon(this Command_AutoForbiddenAfterHaulExplicitly instance ,Thing t)
+    {
+        var data = GameComponent_HaulExplicitly.GetManager(t).DataWithItem(t);
+        if (data!= null)
+        {
+            if (data.itemsWillForbidden.Contains(t))
+            {
+                instance.defaultLabel = "HaulExplicitly.AutoForbiddenAfterHaulExplicitlyIsOnLabel".Translate();
+                instance.icon = ContentFinder<Texture2D>.Get("Buttons/AutoForbiddenAfterHaulExplicitlyForbid");
+            }
+            else
+            {
+                instance.defaultLabel = "HaulExplicitly.AutoForbiddenAfterHaulExplicitlyIsOffLabel".Translate();
+                instance.icon = ContentFinder<Texture2D>.Get("Buttons/AutoForbiddenAfterHaulExplicitlyNoForbid");
+            }
         }
     }
 }

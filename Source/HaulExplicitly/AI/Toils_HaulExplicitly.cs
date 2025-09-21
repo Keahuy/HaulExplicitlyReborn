@@ -52,12 +52,9 @@ public class Toils_HaulExplicitly
                 }
             }
 
-            if (prospect == null)
-                return;
-            int spaceRequest = WorkGiver_HaulExplicitly
-                .AmountPawnWantsToPickUp(actor, prospect, driver.Data);
-            if (spaceRequest == 0)
-                return;
+            if (prospect == null) return;
+            int spaceRequest = WorkGiver_HaulExplicitly.AmountPawnWantsToPickUp(actor, prospect, driver.Data);
+            if (spaceRequest == 0) return;
             var destInfo = DeliverableDestinations.For(prospect, actor, driver.Data);
             List<IntVec3> destinations = destInfo.RequestSpaceForItemAmount(Math.Max(0, spaceRequest - driver.DestinationSpaceAvailable));
             int newDestinationSpace = destInfo.FreeSpaceInCells(destinations);
@@ -108,8 +105,21 @@ public class Toils_HaulExplicitly
             {
                 job.count = 0;
                 driver.record.MovedQuantity += carryBeforeCount;
-                driver.Data.TryRemoveItem(carriedItem);
                 carriedItem.SetIsInHaulExplicitlyDest(true);
+                driver.Data.TryRemoveItem(carriedItem);
+                if (driver.Data.itemsWillForbidden.Contains(carriedItem))
+                {
+                    if (carriedItem is ThingWithComps itemWillForbidden && itemWillForbidden.GetComp<CompForbiddable>() != null)
+                    {
+                        carriedItem.SetForbidden(true);
+                    }
+                }
+
+                if (carriedItem.Spawned &&!carriedItem.GetDontMoved())// 如果 carriedItem 没有被合并进已有物品堆，并且没有被禁止搬运
+                {
+                    carriedItem.SetDontMoved(true);
+                    carriedItem.MapHeld.designationManager.AddDesignation(new Designation(carriedItem,HaulExplicitlyDefOf.HaulExplicitly_Unhaul));
+                }
             }
             else
             {

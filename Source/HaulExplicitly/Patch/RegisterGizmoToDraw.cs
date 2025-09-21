@@ -80,5 +80,11 @@ class Thing_GetGizmos_Patch
         {
             yield return new Command_SelectAllForHaulExplicitly();
         }
+        if (Command_AutoForbiddenAfterHaulExplicitly.RelevantToThing(__instance))
+        {
+            Command_AutoForbiddenAfterHaulExplicitly result = new Command_AutoForbiddenAfterHaulExplicitly(__instance);
+            result.UpdataLabelAndIcon(__instance);
+            yield return result;
+        }
     }
 }

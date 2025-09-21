@@ -25,12 +25,12 @@ public class HaulExplicitlyPostingVisualizationDrawer
         Vector3 start = item
             .PositionHeld
             .ToVector3ShiftedWithAltitude(alt);
-        Vector3 circle_center = data.Center;
+        Vector3 circle_center = data.center;
         circle_center.y = alt;
         Vector3 line_vector = circle_center - start;
-        if (line_vector.magnitude > data.VisualizationRadius)
+        if (line_vector.magnitude > data.visualizationRadius)
         {
-            line_vector = line_vector.normalized * (line_vector.magnitude - data.VisualizationRadius);
+            line_vector = line_vector.normalized * (line_vector.magnitude - data.visualizationRadius);
             GenDraw.DrawLineBetween(start, start + line_vector);
         }
 
@@ -38,7 +38,7 @@ public class HaulExplicitlyPostingVisualizationDrawer
             return;
         postings_drawn_this_frame.Add(data.ID);
         //draw circle
-        GenDraw.DrawCircleOutline(circle_center, data.VisualizationRadius);
+        GenDraw.DrawCircleOutline(circle_center, data.visualizationRadius);
     }
 
     public static void Clear()

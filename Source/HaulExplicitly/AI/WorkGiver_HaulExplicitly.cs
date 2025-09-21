@@ -35,7 +35,7 @@ public class WorkGiver_HaulExplicitly : WorkGiver_Scanner
         var destinationsInfo = DeliverableDestinations.For(t, pawn, data);
         List<IntVec3> destinations = destinationsInfo.RequestSpaceForItemAmount(spaceRequest); // 目标地点当前可用格子
         int destinationSpaceAvailable = destinationsInfo.FreeSpaceInCells(destinations); // 目标地点当前承载能力
-        var count = Math.Min(spaceRequest, destinationSpaceAvailable); // 可以向目标地点搬运 {count} 个物品
+        var count = Math.Min(spaceRequest, destinationSpaceAvailable); // 可以向目标地点搬运 count 个物品
         if (count < 1) return null;
         if (destinations.Count == 0) return null;// 如果目标地点所有可用格子都被别的pawn占用了
         
@@ -74,6 +74,6 @@ public class WorkGiver_HaulExplicitly : WorkGiver_Scanner
 
     public static int AmountPawnWantsToPickUp(Pawn p, Thing t, Data_DesignatorHaulExplicitly data)
     {
-        return Mathf.Min(data.GetRecordWhichWithItem(t).RemainingToHaul(), p.carryTracker.AvailableStackSpace(t.def), t.stackCount);
+        return Mathf.Min(data.GetRecordWhichWithItem(t).GetNumRemainingToHaul(), p.carryTracker.AvailableStackSpace(t.def), t.stackCount);
     }
 }

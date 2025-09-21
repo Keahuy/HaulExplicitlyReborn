@@ -12,9 +12,29 @@ public class GameComponent_HaulExplicitly : GameComponent
 
     private Dictionary<int, JobManager_DesignatorHaulExplicitly> managers = new();
 
+    private List<int> keys;
+
+    private List<JobManager_DesignatorHaulExplicitly> values;
+    
+    private HashSet<Zone_Stockpile> retainingZones = [];
+
     public GameComponent_HaulExplicitly(Game game)
     {
         _instance = this;
+    }
+
+    public override void ExposeData()
+    {
+        base.ExposeData();
+        Scribe_Collections.Look(ref managers, "managers", LookMode.Value, LookMode.Deep, ref keys, ref values);
+        Scribe_Collections.Look(ref retainingZones, "holdingZones", LookMode.Reference);
+        if (Scribe.mode == LoadSaveMode.Saving)
+        {
+            CleanGarbage();
+            GameComponent_HaulExplicitly self = GetInstance();
+            var all_zones = Find.Maps.SelectMany(map => map.zoneManager.AllZones).OfType<Zone_Stockpile>().Select(zone => zone).ToList();
+            self.retainingZones.IntersectWith(all_zones);
+        }
     }
 
     private static GameComponent_HaulExplicitly GetInstance()
@@ -43,10 +63,32 @@ public class GameComponent_HaulExplicitly : GameComponent
         var self = GetInstance();
         var r = self.managers.TryGetValue(map.uniqueID);
         if (r != null)
+        {
             return r;
+        }
+
         var mgr = new JobManager_DesignatorHaulExplicitly(map);
         self.managers[map.uniqueID] = mgr;
         return mgr;
+    }
+
+    public static void CleanGarbage()
+    {
+        GameComponent_HaulExplicitly self = GetInstance();
+        // 找出所有已经不活跃的地图对应的 key
+        var keys = new HashSet<int>(self.managers.Keys);
+        keys.ExceptWith(Find.Maps.Select(m => m.uniqueID));
+        foreach (int k in keys)
+        {
+            // 把这些 key 以及它们对应的 JobManager_DesignatorHaulExplicitly 删掉
+            self.managers.Remove(k);
+        }
+
+        foreach (JobManager_DesignatorHaulExplicitly mgr in self.managers.Values)
+        {
+            // 如果该物品不存在，删除该物品的记录
+            mgr.CleanGarbage();
+        }
     }
 
     internal static int GetNewHaulExplicitlyDataID()
@@ -59,7 +101,7 @@ public class GameComponent_HaulExplicitly : GameComponent
     public static void RegisterData(Data_DesignatorHaulExplicitly data)
     {
         JobManager_DesignatorHaulExplicitly manager = GetManager(data.Map);
-        foreach (Thing i in data.Items)
+        foreach (Thing i in data.items)
         {
             if (i is ThingWithComps twc && twc.GetComp<CompForbiddable>() != null)
             {

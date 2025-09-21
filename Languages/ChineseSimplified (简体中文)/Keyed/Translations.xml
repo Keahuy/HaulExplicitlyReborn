@@ -26,6 +26,12 @@
     <HaulExplicitly.RetainingZoneLabel>保持物品</HaulExplicitly.RetainingZoneLabel>
     <!-- EN: Items in this stockpile will remain here until used, and will not be shuffled to other stockpiles -->
     <HaulExplicitly.RetainingZoneDesc>该储存区中的物品将留在这里直到使用，不会被转移到其他储存区</HaulExplicitly.RetainingZoneDesc>
+    <!-- EN: Auto Forbidden: On -->
+    <HaulExplicitly.AutoForbiddenAfterHaulExplicitlyIsOnLabel>自动禁止：开</HaulExplicitly.AutoForbiddenAfterHaulExplicitlyIsOnLabel>
+    <!-- EN: Auto Forbidden: Off -->
+    <HaulExplicitly.AutoForbiddenAfterHaulExplicitlyIsOffLabel>自动禁止：关</HaulExplicitly.AutoForbiddenAfterHaulExplicitlyIsOffLabel>
+    <!-- EN: Auto Forbidden after Haul to destination -->
+    <HaulExplicitly.AutoForbiddenAfterHaulExplicitlyDesc>搬运到目的地后自动禁止物品互动</HaulExplicitly.AutoForbiddenAfterHaulExplicitlyDesc>
 
     <!-- Other -->
     <!-- EN: Items to haul -->

@@ -7,25 +7,25 @@ namespace HaulExplicitly;
 
 public class DeliverableDestinations
 {
-    public List<IntVec3> PartialCells = [];
-    public List<IntVec3> FreeCells = [];
+    public List<IntVec3> partialCells = [];
+    public List<IntVec3> freeCells = [];
     private Func<IntVec3, float> _grader;
-    public Data_DesignatorHaulExplicitly Posting { get; private set; }
-    public InventoryRecord_DesignatorHaulExplicitly Record { get; private set; }
+    public Data_DesignatorHaulExplicitly Data { get; private set; }
+    public InventoryRecord_DesignatorHaulExplicitly record { get; private set; }
     private int _destinationsWithThisStackType = 0;
     public List<int> PartialCellSpaceAvailable = [];
     private Thing _thing;
 
-    private DeliverableDestinations(Thing item, Pawn carrier, Data_DesignatorHaulExplicitly posting, Func<IntVec3, float> grader)
+    private DeliverableDestinations(Thing item, Pawn carrier, Data_DesignatorHaulExplicitly data, Func<IntVec3, float> grader)
     {
-        this._grader = grader;
-        this.Posting = posting;
-        Record = posting.GetRecordWhichWithItem(item);
-        Map map = posting.Map;
+        _grader = grader;
+        Data = data;
+        record = data.GetRecordWhichWithItem(item);
+        Map map = data.Map;
         _thing = item;
         IntVec3 itemPos = (!item.SpawnedOrAnyParentSpawned) ? carrier.PositionHeld : item.PositionHeld;
-        var traverseparms = TraverseParms.For(carrier, Danger.Deadly, TraverseMode.ByPawn, false);
-        foreach (IntVec3 cell in posting.Destinations)
+        var traverseparms = TraverseParms.For(carrier);
+        foreach (IntVec3 cell in data.destinations)
         {
             List<Thing> itemsInCell = Data_DesignatorHaulExplicitly.GetItemsIfValidItemSpot(map, cell);
             bool validDestination = itemsInCell != null;
@@ -34,7 +34,7 @@ public class DeliverableDestinations
             // (tests items in the cell, as well as reservations on the cell)
             bool cellIsSameStackType = false;
             if (validDestination)
-                foreach (var i in itemsInCell.Where(i => Record.CanAdd(i)))
+                foreach (var i in itemsInCell.Where(i => record.CanAdd(i)))
                     cellIsSameStackType = true;
             Pawn claimant = map.reservationManager.FirstRespectedReserver(cell, carrier);
             if (claimant != null)
@@ -46,7 +46,7 @@ public class DeliverableDestinations
                 ];
                 if (Enumerable.Any(jobs, job => job.def.driverClass == typeof(JobDriver_HaulExplicitly)
                                                 && (job.targetB == cell || job.targetQueueB.Contains(cell))
-                                                && (Record.CanAdd(job.targetA.Thing))))
+                                                && (record.CanAdd(job.targetA.Thing))))
                 {
                     cellIsSameStackType = true;
                 }
@@ -68,14 +68,14 @@ public class DeliverableDestinations
             // oh, just item things
             if (itemsInCell.Count == 0)
             {
-                FreeCells.Add(cell);
+                freeCells.Add(cell);
             }
 
             if (!Enumerable.Any(itemsInCell)) continue;
             var itemInCell = itemsInCell.Single();
             var spaceAvail = itemInCell.def.stackLimit - itemInCell.stackCount;
             if (!cellIsSameStackType || spaceAvail <= 0) continue;
-            PartialCells.Add(cell);
+            partialCells.Add(cell);
             PartialCellSpaceAvailable.Add(spaceAvail);
         }
     }
@@ -99,14 +99,11 @@ public class DeliverableDestinations
 
     public List<IntVec3> UsableDestinations()
     {
-        int freeCellsWillUse = Math.Min(FreeCells.Count,
-            Math.Max(0, Record.NumStacksWillUse - _destinationsWithThisStackType));
-        List<IntVec3> result = new List<IntVec3>(PartialCells);
-        if (Enumerable.Any(FreeCells))
+        int freeCellsWillUse = Math.Min(freeCells.Count, Math.Max(0, record.NumStacksWillUse - _destinationsWithThisStackType));
+        List<IntVec3> result = new List<IntVec3>(partialCells);
+        if (Enumerable.Any(freeCells))
         {
-            result.AddRange(
-                FreeCells.OrderByDescending(_grader)
-                    .Take(freeCellsWillUse));
+            result.AddRange(freeCells.OrderByDescending(_grader).Take(freeCellsWillUse));
         }
 
         return result;
@@ -121,7 +118,7 @@ public class DeliverableDestinations
         int destinationSpaceAvailable = 0;
         for (u = 0; u < destinationsOrdered.Count && destinationSpaceAvailable < amount; u++)
         {
-            int i = PartialCells.IndexOf(destinationsOrdered[u]);
+            int i = partialCells.IndexOf(destinationsOrdered[u]);
             int space = (i == -1) ? _thing.def.stackLimit : PartialCellSpaceAvailable[i];
             destinationSpaceAvailable += space;
         }
@@ -139,12 +136,12 @@ public class DeliverableDestinations
         // 这会导致倒数第2行标注的错误（错误发生在注释位置）
         foreach (var c in cells)
         {
-            if (!PartialCells.Contains(c) && !FreeCells.Contains(c))
+            if (!partialCells.Contains(c) && !freeCells.Contains(c))
             {
                 throw new ArgumentException("Specified cells don't exist in DeliverableDestinations.");
             }
 
-            var thingsAtCell = Posting.Map.thingGrid.ThingsAt(c).ToList();
+            var thingsAtCell = Data.Map.thingGrid.ThingsAt(c).ToList();
             if (!Enumerable.Any(thingsAtCell) || Enumerable.Any(thingsAtCell, t => t.def.category == ThingCategory.Plant))
             {
                 return space += _thing.def.stackLimit;

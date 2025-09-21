@@ -23,35 +23,24 @@ public class Data_DesignatorHaulExplicitly : IExposable
         private set => _map = value;
     }
 
-    public List<IntVec3> Destinations;
+    public List<IntVec3> destinations;
 
-    public Vector3 Cursor;
+    public Vector3 cursor;
 
-    public Vector3 Center;
+    public Vector3 center;
 
-    public float VisualizationRadius;
+    public float visualizationRadius;
 
-    // 于构造器中初始化
-    public List<InventoryRecord_DesignatorHaulExplicitly> Inventory = [];
+    public List<InventoryRecord_DesignatorHaulExplicitly> inventory = [];
+    
+    public List<Thing> items = [];
+    
+    public List<Thing> itemsWillForbidden = [];
 
-    public List<Thing> Items = [];
-
-    public void ExposeData()
+    public Data_DesignatorHaulExplicitly()
     {
-        Scribe_Values.Look(ref _id, "postingId");
-        Scribe_References.Look(ref _map, "map", true);
-        Scribe_Collections.Look(ref Inventory, "inventory", LookMode.Deep);
-        Scribe_Collections.Look(ref Destinations, "destinations", LookMode.Value);
-        Scribe_Values.Look(ref Cursor, "cursor");
-        Scribe_Values.Look(ref Center, "center");
-        Scribe_Values.Look(ref VisualizationRadius, "visualizationRadius");
-
-        if (Scribe.mode == LoadSaveMode.PostLoadInit)// 加载存档时
-        {
-            ReloadItemsFromInventory();
-        }
+        // 防报错：SaveableFromNode exception: System.MissingMethodException: Constructor on type 'HaulExplicitly.Data_DesignatorHaulExplicitly' not found.
     }
-
     public Data_DesignatorHaulExplicitly(IEnumerable<object> objects)
     {
         // 当新建一个 Data_DesignatorHaulExplicitly 时为其赋予一个独特的 ID 字段
@@ -65,26 +54,72 @@ public class Data_DesignatorHaulExplicitly : IExposable
                 continue;
             }
 
-            Items.Add(t);
+            items.Add(t);
             // 尝试将物品加入一个可用的 Record ，如果没有可用的 Record 就新建一个
-            if (!Inventory.Any(record => record.TryAddItem(t)))
+            if (!inventory.Any(record => record.TryAddItem(t)))
             {
-                // 初始化 Inventory 字段
-                Inventory.Add(new InventoryRecord_DesignatorHaulExplicitly(t, this));
+                // 初始化 inventory 字段
+                inventory.Add(new InventoryRecord_DesignatorHaulExplicitly(t, this));
             }
         }
     }
-    
+
+    public void ExposeData()
+    {
+        Scribe_Values.Look(ref _id, "postingId");
+        Scribe_References.Look(ref _map, "map", true);
+        Scribe_Collections.Look(ref inventory, "inventory", LookMode.Deep);
+        Scribe_Collections.Look(ref destinations, "destinations", LookMode.Value);
+        Scribe_Values.Look(ref cursor, "cursor");
+        Scribe_Values.Look(ref center, "center");
+        Scribe_Values.Look(ref visualizationRadius, "visualizationRadius");
+        Scribe_Collections.Look(ref itemsWillForbidden,"itemsWillForbidden",LookMode.Value);
+
+        if (Scribe.mode == LoadSaveMode.PostLoadInit)// 加载存档时
+        {
+            ReloadItemsFromInventory();
+        }
+    }
+
+    public int SwitchAutoForbidden(Thing t)
+    {
+        if (!items.Contains(t)) return -1;
+        InventoryRecord_DesignatorHaulExplicitly? ownerRecord = null;
+        foreach (var record in inventory)
+        {
+            if (record.HasItem(t))
+            {
+                ownerRecord = record;
+                break;
+            }
+        }
+        if (ownerRecord == null)
+        {
+            Log.Error("Something went wrong hbhnoetb9ugob9g3b49.");
+            return -1;
+        }
+
+        if (itemsWillForbidden.Contains(t))
+        {
+            itemsWillForbidden.Remove(t);
+            return 0;
+        }
+        else
+        {
+            itemsWillForbidden.Add(t);
+            return 1;
+        }
+    }
     public InventoryRecord_DesignatorHaulExplicitly GetRecordWhichWithItem(Thing t)
     {
-        return Inventory.First(record => record.HasItem(t));
+        return inventory.FirstOrDefault(record => record.HasItem(t));
     }
     
     public bool TryRemoveItem(Thing t, bool playerCancelled = false)
     {
-        if (!Items.Contains(t)) return false;
+        if (!items.Contains(t)) return false;
         InventoryRecord_DesignatorHaulExplicitly? ownerRecord = null;
-        foreach (var record in Inventory)
+        foreach (var record in inventory)
         {
             if (record.HasItem(t))
             {
@@ -99,26 +134,27 @@ public class Data_DesignatorHaulExplicitly : IExposable
             return false;
         }
 
-        Items.Remove(t);
+        items.Remove(t);
         if (!t.GetIsInHaulExplicitlyDest())
         {
             t.SetDontMoved(false);
+            t.MapHeld.designationManager.TryRemoveDesignationOn(t,HaulExplicitlyDefOf.HaulExplicitly_Unhaul);
         }
         return true;
     }
     
-    public bool TryAddItemSplinter(Thing t)
+    public bool TryAddItemSplinter(Thing t) // 如果一堆物品没有完全搬运，那么殖民者手上的那一小堆物品会变成新的一堆物品，有自己独特的ID
     {
-        if (Items.Contains(t))
+        if (items.Contains(t))
         {
             return false;
         }
 
-        foreach (var record in Inventory)
+        foreach (var record in inventory)
         {
             if (record.CanAdd(t))
             {
-                Items.Add(t);
+                items.Add(t);
                 record.TryAddItem(t, false);
                 return true;
             }
@@ -130,7 +166,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
 
     public void Clean()
     {
-        var destroyedItems = new List<Thing>(Items.Where(i => i.Destroyed));
+        var destroyedItems = new List<Thing>(items.Where(i => i.Destroyed));
         foreach (var i in destroyedItems)
         {
             TryRemoveItem(i);
@@ -138,16 +174,16 @@ public class Data_DesignatorHaulExplicitly : IExposable
     }
     public void ReloadItemsFromInventory()
     {
-        Items = [];
-        foreach (var t in Inventory.SelectMany(r => r.Items))
+        items = [];
+        foreach (var t in inventory.SelectMany(r => r.Items))
         {
-            Items.Add(t);
+            items.Add(t);
         }
     }
 
     private void InventoryResetMerge()
     {
-        foreach (InventoryRecord_DesignatorHaulExplicitly record in Inventory)
+        foreach (InventoryRecord_DesignatorHaulExplicitly record in inventory)
         {
             record.ResetMerge();
         }
@@ -231,14 +267,14 @@ public class Data_DesignatorHaulExplicitly : IExposable
 
     public bool TryMakeDestinations(Vector3 cursor, bool tryBeLazy = true)
     {
-        if (tryBeLazy && cursor == Cursor)
+        if (tryBeLazy && cursor == this.cursor)
         {
-            return Destinations != null;
+            return this.destinations != null;
         }
 
         // 使用 HaulExplicitly 命令时
-        Cursor = cursor;
-        int minStacks = Inventory.Sum(record => record.NumStacksWillUse);
+        this.cursor = cursor;
+        int minStacks = inventory.Sum(record => record.NumStacksWillUse);
         // 🤔
         InventoryResetMerge();
         var destinations = new List<IntVec3>();
@@ -254,8 +290,8 @@ public class Data_DesignatorHaulExplicitly : IExposable
             else
             {
                 Thing item = itemsInCell.First();
-                if (itemsInCell.Count != 1 || Items.Contains(item)) continue; // 🤔 对吗？itemsInCell有没有可能>1
-                foreach (var record in Inventory.Where(record => record.CanAdd(item) && item.stackCount != item.def.stackLimit))
+                if (itemsInCell.Count != 1 || items.Contains(item)) continue; // 🤔 对吗？itemsInCell有没有可能>1
+                foreach (var record in inventory.Where(record => record.CanAdd(item) && item.stackCount != item.def.stackLimit))
                 {
                     destinations.Add(cell);
                     record.AddMergeCell(item.stackCount);
@@ -265,17 +301,17 @@ public class Data_DesignatorHaulExplicitly : IExposable
 
             if (destinations.Count < minStacks) continue;
 
-            int stacks = Inventory.Sum(record => record.NumStacksWillUse);
+            int stacks = inventory.Sum(record => record.NumStacksWillUse);
             if (destinations.Count < stacks) continue;
             //success operations
             Vector3 sum = destinations.Aggregate(Vector3.zero, (current, dest) => current + dest.ToVector3Shifted());
-            Center = (1.0f / destinations.Count) * sum;
-            VisualizationRadius = (float)Math.Sqrt(destinations.Count / Math.PI);
-            Destinations = destinations;
+            center = (1.0f / destinations.Count) * sum;
+            visualizationRadius = (float)Math.Sqrt(destinations.Count / Math.PI);
+            this.destinations = destinations;
             return true;
         }
 
-        /*Destinations = null;*/ // 🤔
+        /*destinations = null;*/ // 🤔
         return false;
     }
 }

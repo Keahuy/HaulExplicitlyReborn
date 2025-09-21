@@ -1,6 +1,7 @@
 ﻿using HaulExplicitly.AI;
 using RimWorld;
 using Verse;
+using Verse.Noise;
 
 namespace HaulExplicitly;
 
@@ -20,7 +21,7 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
             // 调用 GameComponent_HaulExplicitly.GetManagers() 获得 mgr
             // 从 mgr 的 datas 中投影得到所有的 (Data_DesignatorHaulExplicitly)data 
             // 找出包含本 InventoryRecord_DesignatorHaulExplicitly 的 data *实例*
-            foreach (var data in from mgr in GameComponent_HaulExplicitly.GetManagers() from data in mgr.datas.Values where data.Inventory.Contains(this) select data)
+            foreach (var data in from mgr in GameComponent_HaulExplicitly.GetManagers() from data in mgr.datas.Values where data.inventory.Contains(this) select data)
             {
                 // 与其建立弱引用
                 // 意义：防止互相引用导致GC不自动回收相关资源
@@ -40,14 +41,15 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
 
     private ThingDef _itemStuff;
 
+    public ThingDef ItemStuff { get; private set; }
+
     private int _numMergeStacksWillUse;
     public int NumMergeStacksWillUse { get; private set; }
 
     public int MovedQuantity = 0;
-    public ThingDef ItemStuff { get; private set; }
 
     private ThingDef _miniDef;
-    public ThingDef MiniDef { get; private set; }
+    public ThingDef? MiniDef { get; private set; }
 
     private int _selectedQuantity;
     public int SelectedQuantity { get; private set; }
@@ -59,8 +61,7 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
         get => (_playerSetQuantity == -1) ? SelectedQuantity : _playerSetQuantity;
         set
         {
-            if (value < 0 || value > SelectedQuantity)
-                throw new ArgumentOutOfRangeException();
+            if (value < 0 || value > SelectedQuantity) throw new ArgumentOutOfRangeException();
             _playerSetQuantity = value;
         }
     }
@@ -74,19 +75,24 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
     // 需要占用的物品堆数 🤔不太明白
     public int NumStacksWillUse => StacksWorth(ItemDef, Math.Max(0, SetQuantity - MergeCapacity)) + NumMergeStacksWillUse;
 
+    // 将会存储不同堆不同ID的同种物品
     public List<Thing> Items = [];
 
     public void ExposeData()
     {
         Scribe_Collections.Look(ref Items, "items", LookMode.Reference);
-        Scribe_Defs.Look(ref _itemDef, "itemDef");
-        Scribe_Defs.Look(ref _itemStuff, "itemStuff");
-        Scribe_Defs.Look(ref _miniDef, "minifiableDef");
         Scribe_Values.Look(ref _selectedQuantity, "selectedQuantity");
         Scribe_Values.Look(ref _playerSetQuantity, "setQuantity");
         Scribe_Values.Look(ref _mergeCapacity, "mergeCapacity");
         Scribe_Values.Look(ref _numMergeStacksWillUse, "numMergeStacksWillUse");
         Scribe_Values.Look(ref MovedQuantity, "movedQuantity");
+
+        if (Scribe.mode == LoadSaveMode.PostLoadInit && Items.Any())
+        {
+            ItemDef = Items.First().def;
+            ItemStuff = Items.First().Stuff;
+            MiniDef = (Items.First() as MinifiedThing)?.InnerThing.def;
+        }
     }
 
     public InventoryRecord_DesignatorHaulExplicitly()
@@ -160,7 +166,7 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
         return r;
     }
 
-    public int RemainingToHaul()
+    public int GetNumRemainingToHaul()
     {
         var pawnsList = new List<Pawn>(ParentData.Map.mapPawns.PawnsInFaction(Faction.OfPlayer));
         int beingHauledNow = 0;
@@ -173,7 +179,7 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
 
             if (p.jobs.curJob.def.driverClass == typeof(JobDriver_HaulExplicitly) && this == ((JobDriver_HaulExplicitly)p.jobs.curDriver).record)
             {
-                beingHauledNow += p.jobs.curJob.count;
+                beingHauledNow += p.jobs.curJob.count; // count 是该 job 向目的地搬运的物品数目
             }
         }
 

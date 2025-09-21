@@ -49,11 +49,16 @@ public class JobDriver_HaulExplicitly : JobDriver
         }
     }
 
-    public void Init() // 初始化
+    public void Init() // 当获取 _data 或 _record 为 null 时，初始化
     {
         Thing targetItem = job.targetA.Thing;
         _data = GameComponent_HaulExplicitly.GetManager(targetItem.MapHeld).datas[DataIndex];
         _record = _data.GetRecordWhichWithItem(targetItem);
+        if (_record==null)
+        {
+            _record = new InventoryRecord_DesignatorHaulExplicitly(targetItem, _data);
+            _data.inventory.Add(_record);
+        }
     }
 
 

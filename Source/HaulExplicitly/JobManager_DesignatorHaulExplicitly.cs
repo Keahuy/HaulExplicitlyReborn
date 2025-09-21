@@ -12,7 +12,7 @@ public class JobManager_DesignatorHaulExplicitly : IExposable
     
     public IEnumerable<Thing> HaulableThings
     {
-        get { return datas.Values.SelectMany(posting => posting.Items); }
+        get { return datas.Values.SelectMany(posting => posting.items); }
     }
 
     public void ExposeData()
@@ -26,11 +26,8 @@ public class JobManager_DesignatorHaulExplicitly : IExposable
         var keys = new List<int>(datas.Keys);
         foreach (int k in keys)
         {
+            // 如果该物品不存在，删除该物品的记录
             datas[k].Clean();
-            //var status = postings[k].Status();
-            //if (status == HaulExplicitlyJobStatus.Complete
-            //    || status == HaulExplicitlyJobStatus.Incompletable)
-            //    postings.Remove(k);
         }
     }
 
@@ -41,12 +38,12 @@ public class JobManager_DesignatorHaulExplicitly : IExposable
 
     public JobManager_DesignatorHaulExplicitly(Map map)
     {
-        this.Map = map;
+        Map = map;
         datas = new Dictionary<int, Data_DesignatorHaulExplicitly>();
     }
 
     public Data_DesignatorHaulExplicitly? DataWithItem(Thing item)
     {
-        return datas.Values.FirstOrDefault(posting => posting.Items.Contains(item));
+        return datas.Values.FirstOrDefault(posting => posting.items.Contains(item));
     }
 }

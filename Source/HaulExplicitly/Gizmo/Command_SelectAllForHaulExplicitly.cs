@@ -22,7 +22,7 @@ public class Command_SelectAllForHaulExplicitly : Command
         Thing example = (Thing)selection.First();
         Data_DesignatorHaulExplicitly? data = GameComponent_HaulExplicitly.GetManager(example).DataWithItem(example);
         if (data == null) return;
-        foreach (Thing t in data.Items)
+        foreach (Thing t in data.items)
         {
             if (t != null && !selection.Contains(t) && t.SpawnedOrAnyParentSpawned)
             {
@@ -38,10 +38,9 @@ public class Command_SelectAllForHaulExplicitly : Command
         if (data == null) return false;
         foreach (object o in Find.Selector.SelectedObjects)
         {
-            Thing? other = o as Thing;
-            if (other == null || !data.Items.Contains(other)) return false;
+            if (o is not Thing other || !data.items.Contains(other)) return false;
         }
 
-        return Find.Selector.SelectedObjects.Count < Enumerable.Count(data.Items, i => i.SpawnedOrAnyParentSpawned);
+        return Find.Selector.SelectedObjects.Count < Enumerable.Count(data.items, i => i.SpawnedOrAnyParentSpawned);
     }
 }

@@ -14,6 +14,9 @@
     <HaulExplicitly.SelectAllHaulExplicitlyDesc>Select every item that is a part of the same hauling job as this item.</HaulExplicitly.SelectAllHaulExplicitlyDesc>
     <HaulExplicitly.RetainingZoneLabel>Retain items</HaulExplicitly.RetainingZoneLabel>
     <HaulExplicitly.RetainingZoneDesc>Items in this stockpile will remain here until used, and will not be shuffled to other stockpiles</HaulExplicitly.RetainingZoneDesc>
+    <HaulExplicitly.AutoForbiddenAfterHaulExplicitlyIsOnLabel>Auto Forbidden: On</HaulExplicitly.AutoForbiddenAfterHaulExplicitlyIsOnLabel>
+    <HaulExplicitly.AutoForbiddenAfterHaulExplicitlyIsOffLabel>Auto Forbidden: Off</HaulExplicitly.AutoForbiddenAfterHaulExplicitlyIsOnLabel>
+    <HaulExplicitly.AutoForbiddenAfterHaulExplicitlyDesc>Auto Forbidden after Haul to destination</HaulExplicitly.AutoForbiddenAfterHaulExplicitlyDesc>
 
     <!-- Other -->
     <HaulExplicitly.InventoryLabel>Items to haul</HaulExplicitly.InventoryLabel>
