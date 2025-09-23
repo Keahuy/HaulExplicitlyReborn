@@ -12,11 +12,11 @@ public class GameComponent_HaulExplicitly : GameComponent
 
     private Dictionary<int, JobManager_DesignatorHaulExplicitly> managers = new();
 
-    private List<int> keys;
+    /*private List<int> keys;
 
-    private List<JobManager_DesignatorHaulExplicitly> values;
-    
-    private HashSet<Zone_Stockpile> retainingZones = [];
+    private List<JobManager_DesignatorHaulExplicitly> values;*/
+
+    /*private HashSet<Zone_Stockpile> retainingZones = [];*/
 
     public GameComponent_HaulExplicitly(Game game)
     {
@@ -26,14 +26,14 @@ public class GameComponent_HaulExplicitly : GameComponent
     public override void ExposeData()
     {
         base.ExposeData();
-        Scribe_Collections.Look(ref managers, "managers", LookMode.Value, LookMode.Deep, ref keys, ref values);
-        Scribe_Collections.Look(ref retainingZones, "holdingZones", LookMode.Reference);
+        Scribe_Collections.Look(ref managers, "managers", LookMode.Value, LookMode.Deep /*, ref keys, ref values*/);
+        /*Scribe_Collections.Look(ref retainingZones, "holdingZones", LookMode.Reference);*/
         if (Scribe.mode == LoadSaveMode.Saving)
         {
             CleanGarbage();
-            GameComponent_HaulExplicitly self = GetInstance();
+            /*GameComponent_HaulExplicitly self = GetInstance();
             var all_zones = Find.Maps.SelectMany(map => map.zoneManager.AllZones).OfType<Zone_Stockpile>().Select(zone => zone).ToList();
-            self.retainingZones.IntersectWith(all_zones);
+            /*self.retainingZones.IntersectWith(all_zones);#1#*/
         }
     }
 
@@ -55,7 +55,9 @@ public class GameComponent_HaulExplicitly : GameComponent
             return GetManager(t.Map);
         }
 
-        return (t.holdingOwner.Owner as Pawn)?.Map != null ? GetManager((t.holdingOwner.Owner as Pawn)?.Map!) : new JobManager_DesignatorHaulExplicitly();
+        return (t.holdingOwner.Owner as Pawn)?.Map != null
+            ? GetManager((t.holdingOwner.Owner as Pawn)?.Map!)
+            : new JobManager_DesignatorHaulExplicitly();
     }
 
     public static JobManager_DesignatorHaulExplicitly GetManager(Map map)
@@ -94,7 +96,7 @@ public class GameComponent_HaulExplicitly : GameComponent
     internal static int GetNewHaulExplicitlyDataID()
     {
         GameComponent_HaulExplicitly self = GetInstance();
-        var max = self.managers.Values.Aggregate(-1, (current, mgr) => mgr.datas.Values.Select(posting => posting.ID).Prepend(current).Max());
+        var max = self.managers.Values.Aggregate(-1, (current, mgr) => mgr.datas.Values.Select(data => data.ID).Prepend(current).Max());
         return max + 1;
     }
 
@@ -103,6 +105,13 @@ public class GameComponent_HaulExplicitly : GameComponent
         JobManager_DesignatorHaulExplicitly manager = GetManager(data.Map);
         foreach (Thing i in data.items)
         {
+            foreach (var d in manager.datas.Values)
+            {
+                d.TryRemoveItem(i);
+            }
+
+            Utilities.RemoveCurrentHaulExplicitlyJob(i);
+
             if (i is ThingWithComps twc && twc.GetComp<CompForbiddable>() != null)
             {
                 i.SetForbidden(false);
@@ -111,15 +120,6 @@ public class GameComponent_HaulExplicitly : GameComponent
             if (!i.GetDontMoved())
             {
                 i.SetDontMoved(true);
-                if (i.MapHeld.designationManager.DesignationOn(i, HaulExplicitlyDefOf.HaulExplicitly_Unhaul) == null)
-                {
-                    i.MapHeld.designationManager.AddDesignation(new Designation(i, HaulExplicitlyDefOf.HaulExplicitly_Unhaul));
-                }
-            }
-
-            foreach (var p2 in manager.datas.Values)
-            {
-                p2.TryRemoveItem(i);
             }
         }
 

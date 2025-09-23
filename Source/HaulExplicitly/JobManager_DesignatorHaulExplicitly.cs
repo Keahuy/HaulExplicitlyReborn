@@ -8,11 +8,15 @@ public class JobManager_DesignatorHaulExplicitly : IExposable
 
     private Map _map;
 
-    public Map Map { get; private set; }
-    
+    public Map Map
+    {
+        get => _map;
+        private set => _map = value;
+    }
+
     public IEnumerable<Thing> HaulableThings
     {
-        get { return datas.Values.SelectMany(posting => posting.items); }
+        get { return datas.Values.SelectMany(data => data.items); }
     }
 
     public void ExposeData()
@@ -20,7 +24,7 @@ public class JobManager_DesignatorHaulExplicitly : IExposable
         Scribe_References.Look(ref _map, "map", true);
         Scribe_Collections.Look(ref datas, "datas", LookMode.Value, LookMode.Deep);
     }
-    
+
     public void CleanGarbage()
     {
         var keys = new List<int>(datas.Keys);
@@ -44,6 +48,6 @@ public class JobManager_DesignatorHaulExplicitly : IExposable
 
     public Data_DesignatorHaulExplicitly? DataWithItem(Thing item)
     {
-        return datas.Values.FirstOrDefault(posting => posting.items.Contains(item));
+        return datas.Values.FirstOrDefault(data => data.items.Contains(item));
     }
 }

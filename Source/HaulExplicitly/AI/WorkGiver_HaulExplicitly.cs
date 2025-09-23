@@ -15,6 +15,7 @@ public class WorkGiver_HaulExplicitly : WorkGiver_Scanner
 
     public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
     {
+        // 获取需要搬运的物品。如果成功获取，触发 WorkGiver_Scanner.HasJobOnThing -> WorkGiver_HaulExplicitly.JobOnThing
         return GameComponent_HaulExplicitly.GetManager(pawn).HaulableThings;
     }
 
@@ -34,7 +35,7 @@ public class WorkGiver_HaulExplicitly : WorkGiver_Scanner
         int spaceRequest = AmountPawnWantsToPickUp(pawn, t, data); // 需要搬运的物品数
         var destinationsInfo = DeliverableDestinations.For(t, pawn, data);
         List<IntVec3> destinations = destinationsInfo.RequestSpaceForItemAmount(spaceRequest); // 目标地点当前可用格子
-        int destinationSpaceAvailable = destinationsInfo.FreeSpaceInCells(destinations); // 目标地点当前承载能力
+        int destinationSpaceAvailable = destinationsInfo.FreeSpaceInCells(destinations); // 目标地点所有格子对被搬运物品的总剩余承载能力
         var count = Math.Min(spaceRequest, destinationSpaceAvailable); // 可以向目标地点搬运 count 个物品
         if (count < 1) return null;
         if (destinations.Count == 0) return null;// 如果目标地点所有可用格子都被别的pawn占用了
@@ -43,7 +44,6 @@ public class WorkGiver_HaulExplicitly : WorkGiver_Scanner
         JobDef jobDefOfHaulExplicitly = (JobDef)GenDefDatabase.GetDef(typeof(JobDef), "HaulExplicitly");
         Job job = new Job(jobDefOfHaulExplicitly, t, destinations.First())
         {
-            //((JobDriver_HaulExplicitly)job.GetCachedDriver(pawn)).init();
             count = count,
             targetQueueA = new List<LocalTargetInfo>([new IntVec3(data.ID, destinationSpaceAvailable, 0)]),
             targetQueueB = new List<LocalTargetInfo>(destinations.Skip(1).Take(destinations.Count - 1).Select(c => new LocalTargetInfo(c))),
@@ -55,8 +55,8 @@ public class WorkGiver_HaulExplicitly : WorkGiver_Scanner
     public static bool CanGetThing(Pawn pawn, Thing t, bool forced)
     {
         //tests based on AI.HaulAIUtility.PawnCanAutomaticallyHaulFast
-        UnfinishedThing unfinishedThing = t as UnfinishedThing;
-        if ((unfinishedThing != null && unfinishedThing.BoundBill != null)
+        UnfinishedThing? unfinishedThing = t as UnfinishedThing;
+        if (unfinishedThing is { BoundBill: not null }
             || !pawn.CanReach(t, PathEndMode.ClosestTouch, pawn.NormalMaxDanger(), mode: TraverseMode.ByPawn)
             || !pawn.CanReserve(t, 1, -1, null, forced))
         {

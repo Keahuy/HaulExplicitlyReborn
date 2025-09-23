@@ -50,14 +50,11 @@ public class Designator_HaulExplicitly : Designator
     {
         // 理论上data在 Selected() 初始化过了 🤔
         if (data == null) return;
-        if (data.TryMakeDestinations(UI.MouseMapPosition()) && data.destinations != null)
+        if (!data.TryMakeDestinations(UI.MouseMapPosition()) || data.destinations == null) return;
+        float alt = AltitudeLayer.MetaOverlays.AltitudeFor();
+        foreach (var drawPos in data.destinations.Select(d => d.ToVector3ShiftedWithAltitude(alt)))
         {
-            float alt = AltitudeLayer.MetaOverlays.AltitudeFor();
-            foreach (IntVec3 d in data.destinations)
-            {
-                Vector3 drawPos = d.ToVector3ShiftedWithAltitude(alt);
-                Graphics.DrawMesh(MeshPool.plane10, drawPos, Quaternion.identity, DesignatorUtility.DragHighlightThingMat, 0);
-            }
+            Graphics.DrawMesh(MeshPool.plane10, drawPos, Quaternion.identity, DesignatorUtility.DragHighlightThingMat, 0);
         }
     }
     
@@ -103,13 +100,11 @@ public class Designator_HaulExplicitly : Designator
                 Rect rowRect = new Rect(0f, y, innerRect.width - 24f, 28f);
                 if (rec.SelectedQuantity > 1)
                 {
-                    Rect buttonRect = new Rect(rowRect.x + rowRect.width,
-                        rowRect.y + (rowRect.height - 24f) / 2, 24f, 24f);
-                    if (Widgets.ButtonImage(buttonRect,
-                            RimWorld.Planet.CaravanThingsTabUtility.AbandonSpecificCountButtonTex))
+                    Rect buttonRect = new Rect(rowRect.x + rowRect.width, rowRect.y + (rowRect.height - 24f) / 2, 24f, 24f);
+                    if (Widgets.ButtonImage(buttonRect, RimWorld.Planet.CaravanThingsTabUtility.AbandonSpecificCountButtonTex))
                     {
                         string txt = "HaulExplicitly.ItemHaulSetQuantity".Translate(new NamedArgument((rec.ItemDef.label).CapitalizeFirst(), "ITEMTYPE"));
-                        var dialog = new Dialog_Slider(txt, 1, rec.SelectedQuantity, delegate(int x) { rec.SetQuantity = x; }, rec.SetQuantity);
+                        var dialog = new Dialog_Slider(txt, 1, rec.SelectedQuantity, x => { rec.SetQuantity = x; }, rec.SetQuantity);
                         dialog.layer = WindowLayer.GameUI;
                         Find.WindowStack.Add(dialog);
                     }

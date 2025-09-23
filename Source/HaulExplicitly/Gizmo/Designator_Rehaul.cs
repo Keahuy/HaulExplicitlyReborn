@@ -60,6 +60,6 @@ public class Designator_Rehaul : Designator
 
         t?.SetDontMoved(false);
         t?.SetIsInHaulExplicitlyDest(false); // 
-        Map.designationManager.TryRemoveDesignationOn(t, HaulExplicitlyDefOf.HaulExplicitly_Unhaul);
+        /*Map.designationManager.TryRemoveDesignationOn(t, HaulExplicitlyDefOf.HaulExplicitly_Unhaul);*/
     }
 }

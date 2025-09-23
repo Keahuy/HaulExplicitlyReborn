@@ -29,6 +29,7 @@ public class Toils_HaulExplicitly
             {
                 actor.Map.reservationManager.Release(target, actor, job);
             }
+
             carriedItem = actor.carryTracker.CarriedThing;
             job.SetTarget(haulxItemInd, carriedItem);
             actor.records.Increment(RecordDefOf.ThingsHauled);
@@ -115,10 +116,9 @@ public class Toils_HaulExplicitly
                     }
                 }
 
-                if (carriedItem.Spawned &&!carriedItem.GetDontMoved())// 如果 carriedItem 没有被合并进已有物品堆，并且没有被禁止搬运
+                if (carriedItem.Spawned && !carriedItem.GetDontMoved()) // 如果 carriedItem 没有被合并进已有物品堆，并且没有被禁止搬运
                 {
                     carriedItem.SetDontMoved(true);
-                    carriedItem.MapHeld.designationManager.AddDesignation(new Designation(carriedItem,HaulExplicitlyDefOf.HaulExplicitly_Unhaul));
                 }
             }
             else

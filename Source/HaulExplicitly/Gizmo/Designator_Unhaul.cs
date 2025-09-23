@@ -62,7 +62,7 @@ public class Designator_Unhaul : Designator
         }
 
         t.SetDontMoved(true);
-        // 为目标物品打上anchor标志
-        Map.designationManager.AddDesignation(new Designation(t, Designation));
+        /*// 为目标物品打上anchor标志
+        Map.designationManager.AddDesignation(new Designation(t, Designation));*/
     }
 }

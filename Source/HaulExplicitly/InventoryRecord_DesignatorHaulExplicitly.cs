@@ -33,28 +33,81 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
         }
     }
 
-    private ThingDef _itemDef;
-    public ThingDef ItemDef { get; private set; }
+    private ThingDef? _itemDef;
+
+    public ThingDef ItemDef
+    {
+        get
+        {
+            if (_itemDef == null)
+            {
+                _itemDef = Items.First().def;
+            }
+
+            return _itemDef;
+        }
+        private set => _itemDef = value;
+    }
 
     private int _mergeCapacity;
-    public int MergeCapacity { get; private set; }
 
-    private ThingDef _itemStuff;
+    public int MergeCapacity
+    {
+        get => _mergeCapacity;
+        private set => _mergeCapacity = value;
+    }
 
-    public ThingDef ItemStuff { get; private set; }
+    private ThingDef? _itemStuff;
+
+    public ThingDef ItemStuff
+    {
+        get
+        {
+            if (_itemStuff == null)
+            {
+                _itemStuff = Items.First().Stuff;
+            }
+
+            return _itemStuff;
+        }
+        private set => _itemStuff = value;
+    }
 
     private int _numMergeStacksWillUse;
-    public int NumMergeStacksWillUse { get; private set; }
+
+    public int NumMergeStacksWillUse
+    {
+        get => _numMergeStacksWillUse;
+        private set => _numMergeStacksWillUse = value;
+    }
 
     public int MovedQuantity = 0;
 
-    private ThingDef _miniDef;
-    public ThingDef? MiniDef { get; private set; }
+    private ThingDef? _miniDef;
 
-    private int _selectedQuantity;
-    public int SelectedQuantity { get; private set; }
+    public ThingDef? MiniDef
+    {
+        get
+        {
+            if (_miniDef == null && (Items.First() as MinifiedThing)?.InnerThing.def != null)
+            {
+                _miniDef = (Items.First() as MinifiedThing)?.InnerThing.def;
+            }
+
+            return _miniDef;
+        }
+        private set => _miniDef = value;
+    }
 
     private int _playerSetQuantity = -1;
+
+    private int _selectedQuantity;
+
+    public int SelectedQuantity
+    {
+        get => _selectedQuantity;
+        private set => _selectedQuantity = value;
+    }
 
     public int SetQuantity
     {
@@ -86,13 +139,16 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
         Scribe_Values.Look(ref _mergeCapacity, "mergeCapacity");
         Scribe_Values.Look(ref _numMergeStacksWillUse, "numMergeStacksWillUse");
         Scribe_Values.Look(ref MovedQuantity, "movedQuantity");
+        Scribe_Defs.Look(ref _itemDef, "itemDef");
+        Scribe_Defs.Look(ref _itemStuff, "itemStuff"); // 
+        Scribe_Defs.Look(ref _miniDef, "miniDef"); // 
 
-        if (Scribe.mode == LoadSaveMode.PostLoadInit && Items.Any())
+        /*if (Scribe.mode == LoadSaveMode.PostLoadInit && Items.Any())
         {
-            ItemDef = Items.First().def;
-            ItemStuff = Items.First().Stuff;
-            MiniDef = (Items.First() as MinifiedThing)?.InnerThing.def;
-        }
+            _itemDef = Items.First().def;
+            _itemStuff = Items.First().Stuff;
+            _miniDef = (Items.First() as MinifiedThing)?.InnerThing.def;
+        }*/
     }
 
     public InventoryRecord_DesignatorHaulExplicitly()
@@ -131,10 +187,20 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
 
     public bool CanAdd(Thing t)
     {
-        return t.def.category == ThingCategory.Item
-               && t.def == ItemDef
-               && t.Stuff == ItemStuff
-               && (t as MinifiedThing)?.InnerThing.def == MiniDef;
+        bool result = true;
+        result = result && t.def.category == ThingCategory.Item;
+        result = result && t.def == ItemDef;
+        if (ItemStuff != null && t.Stuff != null)
+        {
+            result = result && t.Stuff == ItemStuff;
+        }
+
+        if (MiniDef != null && (t as MinifiedThing)?.InnerThing.def != null)
+        {
+            result = result && (t as MinifiedThing)?.InnerThing.def == MiniDef;
+        }
+
+        return result;
     }
 
     public bool HasItem(Thing t)
@@ -157,18 +223,17 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
     public bool TryRemoveItem(Thing t, bool playerCancelled = false)
     {
         bool r = Items.Remove(t);
-        if (r && playerCancelled)
-        {
-            SelectedQuantity -= t.stackCount;
-            _playerSetQuantity = Math.Min(_playerSetQuantity, SelectedQuantity);
-        }
+        if (!r || !playerCancelled) return r;
 
+        // 如果是 Command_Cancel_HaulExplicitly
+        SelectedQuantity -= t.stackCount;
+        _playerSetQuantity = Math.Min(_playerSetQuantity, SelectedQuantity);
         return r;
     }
 
     public int GetNumRemainingToHaul()
     {
-        var pawnsList = new List<Pawn>(ParentData.Map.mapPawns.PawnsInFaction(Faction.OfPlayer));
+        var pawnsList = new List<Pawn>(ParentData.Map.mapPawns.PawnsInFaction(Faction.OfPlayer)); // 🤔不如加个是否能从事搬运工作的判断
         int beingHauledNow = 0;
         foreach (Pawn p in pawnsList)
         {

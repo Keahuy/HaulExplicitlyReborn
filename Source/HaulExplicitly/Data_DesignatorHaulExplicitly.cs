@@ -9,13 +9,13 @@ public class Data_DesignatorHaulExplicitly : IExposable
 {
     private int _id;
 
-    private Map? _map; // 在构造器里为其初始化
-
     public int ID
     {
         get => _id;
         private set => _id = value;
     }
+
+    private Map? _map; // 在构造器里为其初始化
 
     public Map Map
     {
@@ -32,15 +32,16 @@ public class Data_DesignatorHaulExplicitly : IExposable
     public float visualizationRadius;
 
     public List<InventoryRecord_DesignatorHaulExplicitly> inventory = [];
-    
+
     public List<Thing> items = [];
-    
+
     public List<Thing> itemsWillForbidden = [];
 
     public Data_DesignatorHaulExplicitly()
     {
         // 防报错：SaveableFromNode exception: System.MissingMethodException: Constructor on type 'HaulExplicitly.Data_DesignatorHaulExplicitly' not found.
     }
+
     public Data_DesignatorHaulExplicitly(IEnumerable<object> objects)
     {
         // 当新建一个 Data_DesignatorHaulExplicitly 时为其赋予一个独特的 ID 字段
@@ -66,16 +67,16 @@ public class Data_DesignatorHaulExplicitly : IExposable
 
     public void ExposeData()
     {
-        Scribe_Values.Look(ref _id, "postingId");
+        Scribe_Values.Look(ref _id, "dataId");
         Scribe_References.Look(ref _map, "map", true);
         Scribe_Collections.Look(ref inventory, "inventory", LookMode.Deep);
         Scribe_Collections.Look(ref destinations, "destinations", LookMode.Value);
         Scribe_Values.Look(ref cursor, "cursor");
         Scribe_Values.Look(ref center, "center");
         Scribe_Values.Look(ref visualizationRadius, "visualizationRadius");
-        Scribe_Collections.Look(ref itemsWillForbidden,"itemsWillForbidden",LookMode.Value);
+        Scribe_Collections.Look(ref itemsWillForbidden, "itemsWillForbidden", LookMode.Reference);
 
-        if (Scribe.mode == LoadSaveMode.PostLoadInit)// 加载存档时
+        if (Scribe.mode == LoadSaveMode.PostLoadInit) // 加载存档时
         {
             ReloadItemsFromInventory();
         }
@@ -93,6 +94,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
                 break;
             }
         }
+
         if (ownerRecord == null)
         {
             Log.Error("Something went wrong hbhnoetb9ugob9g3b49.");
@@ -110,54 +112,52 @@ public class Data_DesignatorHaulExplicitly : IExposable
             return 1;
         }
     }
+
     public InventoryRecord_DesignatorHaulExplicitly GetRecordWhichWithItem(Thing t)
     {
         return inventory.FirstOrDefault(record => record.HasItem(t));
     }
-    
+
     public bool TryRemoveItem(Thing t, bool playerCancelled = false)
     {
+        // 检查可行性
         if (!items.Contains(t)) return false;
-        InventoryRecord_DesignatorHaulExplicitly? ownerRecord = null;
-        foreach (var record in inventory)
-        {
-            if (record.HasItem(t))
-            {
-                ownerRecord = record;
-                break;
-            }
-        }
 
+        // 移除 Record 中的记录
+        InventoryRecord_DesignatorHaulExplicitly? ownerRecord = Enumerable.FirstOrDefault(inventory, record => record.HasItem(t));
         if (ownerRecord == null || !ownerRecord.TryRemoveItem(t, playerCancelled))
         {
-            Log.Error("Something went wrong hbhnoetb9ugob9g3b49.");
+            Log.Error("HaulExplicitly: Something went wrong.");
             return false;
         }
 
+        // 移除 Data 中的记录
         items.Remove(t);
-        if (!t.GetIsInHaulExplicitlyDest())
+
+        if (!t.GetIsInHaulExplicitlyDest()) // 如果 t 之前没有被 Designator_HaulExplicitly 搬运到指定地点
         {
+            // 恢复可以被搬运，移除 Anchor 标记
             t.SetDontMoved(false);
-            t.MapHeld.designationManager.TryRemoveDesignationOn(t,HaulExplicitlyDefOf.HaulExplicitly_Unhaul);
+            /*t.MapHeld.designationManager.TryRemoveDesignationOn(t, HaulExplicitlyDefOf.HaulExplicitly_Unhaul);*/
         }
+
         return true;
     }
-    
-    public bool TryAddItemSplinter(Thing t) // 如果一堆物品没有完全搬运，那么殖民者手上的那一小堆物品会变成新的一堆物品，有自己独特的ID
+
+    public bool TryAddItemSplinter(Thing t) 
     {
+        // 如果一堆物品没有完全搬运，那么殖民者手上的那一小堆物品会变成新的一堆物品，有自己独特的ID
+        // 该方法将这种物品加入 Record
         if (items.Contains(t))
         {
             return false;
         }
 
-        foreach (var record in inventory)
+        foreach (var record in inventory.Where(record => record.CanAdd(t)))
         {
-            if (record.CanAdd(t))
-            {
-                items.Add(t);
-                record.TryAddItem(t, false);
-                return true;
-            }
+            items.Add(t);
+            record.TryAddItem(t, false);
+            return true;
         }
 
         Log.Error("TryAddItemSplinter failed to find matching record for " + t);
@@ -172,6 +172,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
             TryRemoveItem(i);
         }
     }
+
     public void ReloadItemsFromInventory()
     {
         items = [];

@@ -53,7 +53,9 @@ class Thing_DrawExtraSelectionOverlays_Patch
     static void Postfix(Thing __instance)
     {
         if (__instance.def.EverHaulable)
+        {
             HaulExplicitlyPostingVisualizationDrawer.DrawForItem(__instance);
+        }
     }
 }
 

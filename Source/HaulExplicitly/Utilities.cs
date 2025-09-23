@@ -1,7 +1,10 @@
-﻿using HaulExplicitly.Extension;
+﻿using HaulExplicitly.AI;
+using HaulExplicitly.Extension;
 using HaulExplicitly.Gizmo;
+using RimWorld;
 using UnityEngine;
 using Verse;
+using Verse.AI;
 
 namespace HaulExplicitly;
 
@@ -43,6 +46,25 @@ public static class Utilities
             {
                 instance.defaultLabel = "HaulExplicitly.AutoForbiddenAfterHaulExplicitlyIsOffLabel".Translate();
                 instance.icon = ContentFinder<Texture2D>.Get("Buttons/AutoForbiddenAfterHaulExplicitlyNoForbid");
+            }
+        }
+    }
+    
+    public static void RemoveCurrentHaulExplicitlyJob(Thing t)
+    {
+        foreach (Pawn p in Find.CurrentMap.mapPawns.PawnsInFaction(Faction.OfPlayer).ListFullCopy())
+        {
+            var jobs = new List<Job>(p.jobs.jobQueue.AsEnumerable().Select(j => j.job));
+            if (p.CurJob != null)
+            {
+                jobs.Add(p.CurJob);
+            }
+            foreach (var job in jobs)
+            {
+                if (job.def.driverClass == typeof(JobDriver_HaulExplicitly) && job.targetA.Thing == t)
+                {
+                    p.jobs.EndCurrentOrQueuedJob(job, JobCondition.Incompletable);
+                }
             }
         }
     }

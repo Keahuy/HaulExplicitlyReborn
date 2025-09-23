@@ -8,12 +8,19 @@ namespace HaulExplicitly;
 public class DeliverableDestinations
 {
     public List<IntVec3> partialCells = [];
+
     public List<IntVec3> freeCells = [];
+
     private Func<IntVec3, float> _grader;
+
     public Data_DesignatorHaulExplicitly Data { get; private set; }
+
     public InventoryRecord_DesignatorHaulExplicitly record { get; private set; }
+
     private int _destinationsWithThisStackType = 0;
+
     public List<int> PartialCellSpaceAvailable = [];
+
     private Thing _thing;
 
     private DeliverableDestinations(Thing item, Pawn carrier, Data_DesignatorHaulExplicitly data, Func<IntVec3, float> grader)
@@ -24,7 +31,7 @@ public class DeliverableDestinations
         Map map = data.Map;
         _thing = item;
         IntVec3 itemPos = (!item.SpawnedOrAnyParentSpawned) ? carrier.PositionHeld : item.PositionHeld;
-        var traverseparms = TraverseParms.For(carrier);
+        var traverseParms = TraverseParms.For(carrier);
         foreach (IntVec3 cell in data.destinations)
         {
             List<Thing> itemsInCell = Data_DesignatorHaulExplicitly.GetItemsIfValidItemSpot(map, cell);
@@ -34,8 +41,13 @@ public class DeliverableDestinations
             // (tests items in the cell, as well as reservations on the cell)
             bool cellIsSameStackType = false;
             if (validDestination)
+            {
                 foreach (var i in itemsInCell.Where(i => record.CanAdd(i)))
+                {
                     cellIsSameStackType = true;
+                }
+            }
+
             Pawn claimant = map.reservationManager.FirstRespectedReserver(cell, carrier);
             if (claimant != null)
             {
@@ -44,9 +56,9 @@ public class DeliverableDestinations
                     ..claimant.jobs.jobQueue.Select(x => x.job),
                     claimant.jobs.curJob
                 ];
-                if (Enumerable.Any(jobs, job => job.def.driverClass == typeof(JobDriver_HaulExplicitly)
-                                                && (job.targetB == cell || job.targetQueueB.Contains(cell))
-                                                && (record.CanAdd(job.targetA.Thing))))
+                if (jobs.Any(job => job.def.driverClass == typeof(JobDriver_HaulExplicitly) 
+                                    && (job.targetB == cell || job.targetQueueB.Contains(cell))
+                                    && record.CanAdd(job.targetA.Thing)))
                 {
                     cellIsSameStackType = true;
                 }
@@ -59,37 +71,33 @@ public class DeliverableDestinations
             }
 
             //check if cell is valid, reachable from item, unreserved, and pawn is allowed to go there
-            bool reachable = map.reachability.CanReach(itemPos, cell, PathEndMode.ClosestTouch, traverseparms);
-            if (!validDestination || !reachable || claimant != null || cell.IsForbidden(carrier))
-            {
-                continue;
-            }
-
+            bool reachable = map.reachability.CanReach(itemPos, cell, PathEndMode.ClosestTouch, traverseParms);
+            if (!validDestination || !reachable || claimant != null || cell.IsForbidden(carrier)) continue;
+            
             // oh, just item things
             if (itemsInCell.Count == 0)
             {
                 freeCells.Add(cell);
             }
 
-            if (!Enumerable.Any(itemsInCell)) continue;
+            if (!itemsInCell.Any()) continue;
             var itemInCell = itemsInCell.Single();
-            var spaceAvail = itemInCell.def.stackLimit - itemInCell.stackCount;
+            int spaceAvail = itemInCell.def.stackLimit - itemInCell.stackCount;
             if (!cellIsSameStackType || spaceAvail <= 0) continue;
             partialCells.Add(cell);
             PartialCellSpaceAvailable.Add(spaceAvail);
         }
     }
 
-    public static DeliverableDestinations For(Thing item, Pawn carrier, Data_DesignatorHaulExplicitly posting = null, Func<IntVec3, float> grader = null)
+    public static DeliverableDestinations For(Thing item, Pawn carrier, Data_DesignatorHaulExplicitly data = null, Func<IntVec3, float> grader = null)
     {
-        if (posting == null) //do the handholdy version of this function
+        if (data == null) //do the handholdy version of this function
         {
-            posting = GameComponent_HaulExplicitly.GetManager(item).DataWithItem(item);
-            if (posting == null)
-                throw new ArgumentException();
+            data = GameComponent_HaulExplicitly.GetManager(item).DataWithItem(item);
+            if (data == null) throw new ArgumentException();
         }
 
-        return new DeliverableDestinations(item, carrier, posting, (grader != null) ? grader : DefaultGrader);
+        return new DeliverableDestinations(item, carrier, data, (grader != null) ? grader : DefaultGrader);
     }
 
     public static float DefaultGrader(IntVec3 c)
@@ -126,14 +134,12 @@ public class DeliverableDestinations
         return [..destinationsOrdered.Take(u)];
     }
 
-    // 搬运目标地点对被搬运物品的剩余承载能力
+    
     public int FreeSpaceInCells(IEnumerable<IntVec3> cells)
     {
+        // 搬运目标地点所有格子对被搬运物品的总剩余承载能力
         int space = 0;
 
-        // 我不明白
-        // 为什么 cells == [(148,0,135)]，但是 c 会 == (0,0,0)
-        // 这会导致倒数第2行标注的错误（错误发生在注释位置）
         foreach (var c in cells)
         {
             if (!partialCells.Contains(c) && !freeCells.Contains(c))
@@ -150,7 +156,7 @@ public class DeliverableDestinations
 
             if (!Enumerable.Any(thingsAtCell, t => t.def.EverStorable(false))) continue;
             {
-                var item = thingsAtCell.First(t => t.def.EverStorable(false)); // {pawn} threw exception in WorkGiver HaulExplicitly: System.ArgumentException: Specified cells don't exist in DeliverableDestinations.
+                var item = thingsAtCell.First(t => t.def.EverStorable(false)); 
                 return space += _thing.def.stackLimit - item.stackCount;
             }
         }
