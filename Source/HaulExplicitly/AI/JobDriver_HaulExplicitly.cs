@@ -54,7 +54,7 @@ public class JobDriver_HaulExplicitly : JobDriver
     {
         Thing targetItem = job.targetA.Thing;
         _data = GameComponent_HaulExplicitly.GetManager(targetItem.MapHeld).datas[DataIndex];
-        _record = _data.GetRecordWhichWithItem(targetItem);
+        _record = _data.inventory.FirstOrDefault(r=>r.CanAdd(targetItem));
         if (_record==null)
         {
             _record = new InventoryRecord_DesignatorHaulExplicitly(targetItem, _data);
