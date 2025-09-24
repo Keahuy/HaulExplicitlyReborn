@@ -173,6 +173,11 @@ public class Data_DesignatorHaulExplicitly : IExposable
         }
     }
 
+    public void Clear()
+    {
+        inventory = [];
+    }
+
     public void ReloadItemsFromInventory()
     {
         items = [];

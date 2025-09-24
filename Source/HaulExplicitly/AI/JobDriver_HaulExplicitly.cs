@@ -66,15 +66,8 @@ public class JobDriver_HaulExplicitly : JobDriver
     public override bool TryMakePreToilReservations(bool errorOnFailed) // 尝试占用目标，防止他人再与其互动
     {
         Thing thing = job.GetTarget(TargetIndex.A).Thing;
-        /*if (thing.def.alwaysHaulable) // 使目标物品显示 anchor 标志
-        {
-            if (Map.designationManager.DesignationOn(thing, HaulExplicitlyDefOf.HaulExplicitly_Unhaul) == null)
-            {
-                Map.designationManager.AddDesignation(new Designation(thing, HaulExplicitlyDefOf.HaulExplicitly_Unhaul));
-            }
-        }*/
         thing.SetDontMoved(true);
-
+        
         List<LocalTargetInfo> targets = [TargetA, TargetB];
         targets.AddRange(job.targetQueueB); // 🤔
         return targets.All(t => pawn.Reserve(t, job, 1, -1, null, errorOnFailed));
