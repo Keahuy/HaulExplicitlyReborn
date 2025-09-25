@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Excluded>
+    <exclude>.git</exclude>
+    <exclude>qodana.yaml</exclude>
+    <exclude>Source</exclude>
+    <exclude>Textures\Buttons\AutoForbiddenAfterHaulExplicitlyForbid.dds.zstd</exclude>
+    <exclude>Textures\Buttons\AutoForbiddenAfterHaulExplicitlyNoForbid.dds.zstd</exclude>
+    <exclude>Textures\Buttons\DontHaulExplicitly.dds.zstd</exclude>
+    <exclude>Textures\Buttons\Haulable.dds.zstd</exclude>
+    <exclude>Textures\Buttons\HaulExplicitly.dds.zstd</exclude>
+    <exclude>Textures\Buttons\RetainingZone.dds.zstd</exclude>
+    <exclude>Textures\Buttons\SelectHaulExplicitlyJob.dds.zstd</exclude>
+    <exclude>Textures\Buttons\Unhaulable.dds.zstd</exclude>
+    <exclude>Textures\Overlay\Anchor.dds.zstd</exclude>
+    <exclude>Textures\Overlay\Move.dds.zstd</exclude>
+    <exclude>Textures\psd</exclude>
+  </Excluded>
+</Configuration>
