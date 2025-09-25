@@ -17,13 +17,9 @@ public class Data_DesignatorHaulExplicitly : IExposable
 
     private Map? _map; // 在构造器里为其初始化
 
-    public Map Map
-    {
-        get => _map;
-        private set => _map = value;
-    }
+    public Map Map => _map ??= Find.CurrentMap;
 
-    public List<IntVec3> destinations;
+    public List<IntVec3>? destinations;
 
     public Vector3 cursor;
 
@@ -39,7 +35,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
 
     public Data_DesignatorHaulExplicitly()
     {
-        // 防报错：SaveableFromNode exception: System.MissingMethodException: Constructor on type 'HaulExplicitly.Data_DesignatorHaulExplicitly' not found.
+        // 如果不存在，报错：SaveableFromNode exception: System.MissingMethodException: Constructor on type 'HaulExplicitly.Data_DesignatorHaulExplicitly' not found.
     }
 
     public Data_DesignatorHaulExplicitly(IEnumerable<object> objects)
@@ -47,7 +43,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
         // 当新建一个 Data_DesignatorHaulExplicitly 时为其赋予一个独特的 ID 字段
         ID = GameComponent_HaulExplicitly.GetNewHaulExplicitlyDataID();
         // 初始化 Map 字段
-        Map = Find.CurrentMap;
+        _map = Find.CurrentMap;
         foreach (object o in objects)
         {
             if (o is not Thing t || !t.def.EverHaulable)
@@ -173,11 +169,6 @@ public class Data_DesignatorHaulExplicitly : IExposable
         }
     }
 
-    public void Clear()
-    {
-        inventory = [];
-    }
-
     public void ReloadItemsFromInventory()
     {
         items = [];
@@ -205,9 +196,9 @@ public class Data_DesignatorHaulExplicitly : IExposable
         return Map.thingGrid.ThingsAt(c).All(t => t.def.CanOverlapZones && t.def.passability != Traversability.Impassable /*&& !t.def.IsDoor 🤔也没必要限制不能运向门，左上角弹一个消息警告一下就好了，最好能在搬运前标记一下是哪个物品*/);
     }
 
-    private IEnumerable<IntVec3> PossibleItemDestinationsAtCursor(Vector3 cursor) // 🤔此方法迭代了整个地图，真的有必要吗？
+    private IEnumerable<IntVec3> PossibleItemDestinationsAtCursor(Vector3 c) // 🤔此方法迭代了整个地图，真的有必要吗？
     {
-        IntVec3 cursorCell = new IntVec3(cursor);
+        IntVec3 cursorCell = new IntVec3(c);
         var cardinals = new[] { IntVec3.North, IntVec3.South, IntVec3.East, IntVec3.West };
         HashSet<IntVec3> expended = []; // 只用来判定延伸的格子，从这些格子向外延伸4个格子作为可选目标去检验
         HashSet<IntVec3> available = []; // 可以放置物品的格子，会在接下来返回出去当作目的地，然后移至 expended
@@ -221,11 +212,11 @@ public class Data_DesignatorHaulExplicitly : IExposable
         {
             IntVec3 nearest = new IntVec3();
             float nearestDist = 100000000.0f;
-            foreach (IntVec3 c in available)
+            foreach (IntVec3 intVec3 in available)
             {
-                float dist = (c.ToVector3Shifted() - cursor).magnitude;
+                float dist = (intVec3.ToVector3Shifted() - c).magnitude;
                 if (!(dist < nearestDist)) continue; //🤔为什么 nearestDist 的初始值为 1
-                nearest = c;
+                nearest = intVec3;
                 nearestDist = dist;
             }
 
@@ -235,10 +226,10 @@ public class Data_DesignatorHaulExplicitly : IExposable
 
             foreach (IntVec3 dir in cardinals)
             {
-                IntVec3 c = nearest + dir;
-                if (expended.Contains(c) || available.Contains(c)) continue;
-                var set = IsPossibleItemDestination(c) ? available : expended;
-                set.Add(c);
+                IntVec3 intVec3 = nearest + dir;
+                if (expended.Contains(intVec3) || available.Contains(intVec3)) continue;
+                var set = IsPossibleItemDestination(intVec3) ? available : expended;
+                set.Add(intVec3);
             }
         }
     }
@@ -271,27 +262,27 @@ public class Data_DesignatorHaulExplicitly : IExposable
     }
 
 
-    public bool TryMakeDestinations(Vector3 cursor, bool tryBeLazy = true)
+    public bool TryMakeDestinations(Vector3 c, bool tryBeLazy = true)
     {
-        if (tryBeLazy && cursor == this.cursor)
+        if (tryBeLazy && c == cursor)
         {
-            return this.destinations != null;
+            return destinations != null;
         }
 
         // 使用 HaulExplicitly 命令时
-        this.cursor = cursor;
+        cursor = c;
         int minStacks = inventory.Sum(record => record.NumStacksWillUse);
         // 🤔
         InventoryResetMerge();
-        var destinations = new List<IntVec3>();
-        foreach (var cell in PossibleItemDestinationsAtCursor(cursor)) // 此步从鼠标所在格子开始迭代了整个地图的格子用来判断可用的格子
+        var destinationsLocal = new List<IntVec3>();
+        foreach (var cell in PossibleItemDestinationsAtCursor(c)) // 此步从鼠标所在格子开始迭代了整个地图的格子用来判断可用的格子
         {
             List<Thing>? itemsInCell = GetItemsIfValidItemSpot(Map, cell);
             if (Map.reservationManager.IsReservedByAnyoneOf(cell, Faction.OfPlayer) // 如果该格子被预定了
                 || itemsInCell == null) continue;
             if (itemsInCell.Count == 0)
             {
-                destinations.Add(cell);
+                destinationsLocal.Add(cell);
             }
             else
             {
@@ -299,21 +290,21 @@ public class Data_DesignatorHaulExplicitly : IExposable
                 if (itemsInCell.Count != 1 || items.Contains(item)) continue; // 🤔 对吗？itemsInCell有没有可能>1
                 foreach (var record in inventory.Where(record => record.CanAdd(item) && item.stackCount != item.def.stackLimit))
                 {
-                    destinations.Add(cell);
+                    destinationsLocal.Add(cell);
                     record.AddMergeCell(item.stackCount);
                     break;
                 }
             }
 
-            if (destinations.Count < minStacks) continue;
+            if (destinationsLocal.Count < minStacks) continue;
 
             int stacks = inventory.Sum(record => record.NumStacksWillUse);
-            if (destinations.Count < stacks) continue;
+            if (destinationsLocal.Count < stacks) continue;
             //success operations
-            Vector3 sum = destinations.Aggregate(Vector3.zero, (current, dest) => current + dest.ToVector3Shifted());
-            center = (1.0f / destinations.Count) * sum;
-            visualizationRadius = (float)Math.Sqrt(destinations.Count / Math.PI);
-            this.destinations = destinations;
+            Vector3 sum = destinationsLocal.Aggregate(Vector3.zero, (current, dest) => current + dest.ToVector3Shifted());
+            center = (1.0f / destinationsLocal.Count) * sum;
+            visualizationRadius = (float)Math.Sqrt(destinationsLocal.Count / Math.PI);
+            destinations = destinationsLocal;
             return true;
         }
 

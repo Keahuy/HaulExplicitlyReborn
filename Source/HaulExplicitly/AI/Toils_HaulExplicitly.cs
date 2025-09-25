@@ -10,7 +10,7 @@ public class Toils_HaulExplicitly
 {
     public static Toil PickUpThing(TargetIndex haulxItemInd, Toil nextToilIfBeingOpportunistic)
     {
-        Toil toil = ToilMaker.MakeToil("PickUpThing");
+        Toil toil = ToilMaker.MakeToil();
         toil.initAction = delegate
         {
             Pawn actor = toil.actor;
@@ -40,7 +40,7 @@ public class Toils_HaulExplicitly
 
             //pick up next available item in job?
             if (!actor.CurJob.haulOpportunisticDuplicates) return;
-            Thing prospect = null;
+            Thing? prospect = null;
             int bestDist = 999;
             foreach (Thing item in driver.record.Items.Where(i => i.Spawned && WorkGiver_HaulExplicitly.CanGetThing(actor, i, false)))
             {
@@ -78,9 +78,9 @@ public class Toils_HaulExplicitly
         return toil;
     }
 
-    public static Toil PlaceHauledThingAtDest(TargetIndex destInd, Toil nextToilIfNotDonePlacing)
+    public static Toil PlaceHauledThingAtDest(TargetIndex destInd, Toil? nextToilIfNotDonePlacing)
     {
-        Toil toil = ToilMaker.MakeToil("PlaceHauledThingAtDest");
+        Toil toil = ToilMaker.MakeToil();
         toil.initAction = delegate
         {
             //get all the vars
@@ -96,7 +96,6 @@ public class Toils_HaulExplicitly
             Job job = actor.CurJob;
             var driver = (JobDriver_HaulExplicitly)actor.jobs.curDriver;
             // driver.Init(); //this fixes problems
-            Map map = driver.Data.Map;
             IntVec3 destination = job.GetTarget(destInd).Cell;
 
             //put it down now
@@ -149,7 +148,7 @@ public class Toils_HaulExplicitly
                                                                   + ": Could not find anywhere to put "
                                                                   + carriedItem + " near " + actor.Position
                                                                   + ". Destroying. This should never happen!");
-                        carriedItem.Destroy(DestroyMode.Vanish);
+                        carriedItem.Destroy();
                     }
                 }
             }

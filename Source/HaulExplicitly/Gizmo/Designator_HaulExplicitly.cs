@@ -1,5 +1,5 @@
-﻿using HaulExplicitly.Extension;
-using RimWorld;
+﻿using RimWorld;
+using RimWorld.Planet;
 using UnityEngine;
 using Verse;
 
@@ -48,7 +48,6 @@ public class Designator_HaulExplicitly : Designator
     
     public override void SelectedUpdate()
     {
-        // 理论上data在 Selected() 初始化过了 🤔
         if (data == null) return;
         if (!data.TryMakeDestinations(UI.MouseMapPosition()) || data.destinations == null) return;
         float alt = AltitudeLayer.MetaOverlays.AltitudeFor();
@@ -88,7 +87,7 @@ public class Designator_HaulExplicitly : Designator
         Rect innerRect = new Rect(0f, 0f, outerRect.width - 16f, Math.Max(_guiLastDrawnHeight, outerRect.height));
         Find.WindowStack.ImmediateWindow(622372, winRect, WindowLayer.GameUI, delegate
         {
-            Widgets.BeginScrollView(outerRect, ref _scrollPosition, innerRect, true);
+            Widgets.BeginScrollView(outerRect, ref _scrollPosition, innerRect);
             GUI.BeginGroup(innerRect);
             GUI.color = ITab_Pawn_Gear.ThingLabelColor;
             GameFont prev_font = Text.Font;
@@ -101,7 +100,7 @@ public class Designator_HaulExplicitly : Designator
                 if (rec.SelectedQuantity > 1)
                 {
                     Rect buttonRect = new Rect(rowRect.x + rowRect.width, rowRect.y + (rowRect.height - 24f) / 2, 24f, 24f);
-                    if (Widgets.ButtonImage(buttonRect, RimWorld.Planet.CaravanThingsTabUtility.AbandonSpecificCountButtonTex))
+                    if (Widgets.ButtonImage(buttonRect, CaravanThingsTabUtility.AbandonSpecificCountButtonTex))
                     {
                         string txt = "HaulExplicitly.ItemHaulSetQuantity".Translate(new NamedArgument((rec.ItemDef.label).CapitalizeFirst(), "ITEMTYPE"));
                         var dialog = new Dialog_Slider(txt, 1, rec.SelectedQuantity, x => { rec.SetQuantity = x; }, rec.SetQuantity);
@@ -140,6 +139,6 @@ public class Designator_HaulExplicitly : Designator
             Text.WordWrap = true;
             GUI.EndGroup();
             Widgets.EndScrollView();
-        }, true, false, 1f);
+        });
     }
 }

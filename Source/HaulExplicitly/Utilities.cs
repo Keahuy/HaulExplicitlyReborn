@@ -1,5 +1,4 @@
 ﻿using HaulExplicitly.AI;
-using HaulExplicitly.Extension;
 using HaulExplicitly.Gizmo;
 using RimWorld;
 using UnityEngine;

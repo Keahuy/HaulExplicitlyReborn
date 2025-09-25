@@ -1,7 +1,6 @@
 ﻿using HaulExplicitly.AI;
 using RimWorld;
 using Verse;
-using Verse.Noise;
 
 namespace HaulExplicitly;
 
@@ -81,7 +80,7 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
         private set => _numMergeStacksWillUse = value;
     }
 
-    public int MovedQuantity = 0;
+    public int MovedQuantity;
 
     private ThingDef? _miniDef;
 
@@ -190,7 +189,7 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
         bool result = true;
         result = result && t.def.category == ThingCategory.Item;
         result = result && t.def == ItemDef;
-        if (ItemStuff != null && t.Stuff != null)
+        if (t.Stuff != null)
         {
             result = result && t.Stuff == ItemStuff;
         }

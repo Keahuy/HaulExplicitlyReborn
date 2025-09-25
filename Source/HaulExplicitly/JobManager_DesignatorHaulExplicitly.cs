@@ -6,11 +6,11 @@ public class JobManager_DesignatorHaulExplicitly : IExposable
 {
     public Dictionary<int, Data_DesignatorHaulExplicitly> datas;
 
-    private Map _map;
+    private Map? _map;
 
     public Map Map
     {
-        get => _map;
+        get => _map ?? throw new InvalidOperationException();
         private set => _map = value;
     }
 

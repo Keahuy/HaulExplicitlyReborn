@@ -3,7 +3,6 @@ using HaulExplicitly.Extension;
 using JetBrains.Annotations;
 using RimWorld;
 using Verse;
-using Verse.AI;
 
 namespace HaulExplicitly.Patch;
 

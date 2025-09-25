@@ -1,5 +1,4 @@
-﻿using HaulExplicitly.Extension;
-using RimWorld;
+﻿using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.AI;
@@ -73,7 +72,7 @@ public class WorkGiver_HaulExplicitly : WorkGiver_Scanner
 
         if (t.IsBurning())
         {
-            JobFailReason.Is("BurningLower".Translate(), null);
+            JobFailReason.Is("BurningLower".Translate());
             return false;
         }
 

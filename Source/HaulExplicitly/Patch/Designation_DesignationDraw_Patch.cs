@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using HaulExplicitly.Extension;
 using JetBrains.Annotations;
-using RimWorld;
 using UnityEngine;
 using Verse;
 

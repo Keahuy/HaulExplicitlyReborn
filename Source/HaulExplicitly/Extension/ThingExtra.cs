@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Verse;
+﻿using Verse;
 
 namespace HaulExplicitly.Extension;
 
@@ -11,14 +10,14 @@ public class Thing_ExtraData : IExposable
 
     public void ExposeData()
     {
-        Scribe_Values.Look(ref HaulExplicitly_dontMoved, "HaulExplicitly_dontMoved", false);
-        Scribe_Values.Look(ref HaulExplicitly_isInHaulExplicitlyDest, "HaulExplicitly_isInHaulExplicitlyDest", false);
+        Scribe_Values.Look(ref HaulExplicitly_dontMoved, "HaulExplicitly_dontMoved");
+        Scribe_Values.Look(ref HaulExplicitly_isInHaulExplicitlyDest, "HaulExplicitly_isInHaulExplicitlyDest");
     }
 }
 
 public class GameComponent_ThingExtraData : GameComponent
 {
-    private Dictionary<Thing, Thing_ExtraData> extraData = new Dictionary<Thing, Thing_ExtraData>();
+    private Dictionary<Thing, Thing_ExtraData> extraData = new();
     private List<Thing>? keys;
     private List<Thing_ExtraData>? values;
 
@@ -28,8 +27,6 @@ public class GameComponent_ThingExtraData : GameComponent
 
     public override void ExposeData()
     {
-        // 🤔因为所有需要记录的 thing 的 HaulExplicitly_dontMoved 都为 true 所以根本没必要保存 values 吧
-        // 🤔忘保存 HaulExplicitly_isInHaulExplicitlyDest 了
         base.ExposeData();
 
         if (Scribe.mode == LoadSaveMode.Saving)

@@ -63,7 +63,7 @@ public class GameComponent_HaulExplicitly : GameComponent
     public static JobManager_DesignatorHaulExplicitly GetManager(Map map)
     {
         var self = GetInstance();
-        var r = self.managers.TryGetValue(map.uniqueID);
+        JobManager_DesignatorHaulExplicitly? r = self.managers!.TryGetValue(map.uniqueID);
         if (r != null)
         {
             return r;

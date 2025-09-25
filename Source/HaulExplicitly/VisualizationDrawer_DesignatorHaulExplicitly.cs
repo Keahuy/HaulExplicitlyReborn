@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using JetBrains.Annotations;
 using UnityEngine;
 using Verse;
 
@@ -50,11 +51,13 @@ public class HaulExplicitlyPostingVisualizationDrawer
 [HarmonyPatch(typeof(Thing), "DrawExtraSelectionOverlays")]
 class Thing_DrawExtraSelectionOverlays_Patch
 {
+    [HarmonyPostfix]
+    [UsedImplicitly]
     static void Postfix(Thing __instance)
     {
         if (__instance.def.EverHaulable)
         {
-            HaulExplicitlyPostingVisualizationDrawer.DrawForItem(__instance);
+            HaulExplicitlyPostingVisualizationDrawer.DrawForItem(__instance);// 🤔
         }
     }
 }
@@ -62,8 +65,10 @@ class Thing_DrawExtraSelectionOverlays_Patch
 [HarmonyPatch(typeof(RimWorld.SelectionDrawer), "DrawSelectionOverlays")]
 class SelectionDrawer_DrawSelectionOverlays_Patch
 {
+    [HarmonyPostfix]
+    [UsedImplicitly]
     static void Postfix()
     {
-        HaulExplicitlyPostingVisualizationDrawer.Clear();
+        HaulExplicitlyPostingVisualizationDrawer.Clear();// 🤔
     }
 }

@@ -19,7 +19,6 @@ public class JobDriver_HaulExplicitly : JobDriver
 
             return _record ?? throw new InvalidOperationException();
         }
-        private set => _record = value;
     }
 
     private Data_DesignatorHaulExplicitly? _data;
@@ -35,7 +34,6 @@ public class JobDriver_HaulExplicitly : JobDriver
 
             return _data ?? throw new InvalidOperationException();
         }
-        private set => _data = value;
     }
 
     public int DataIndex => job.targetQueueA[0].Cell.x;
@@ -69,7 +67,7 @@ public class JobDriver_HaulExplicitly : JobDriver
         thing.SetDontMoved(true);
         
         List<LocalTargetInfo> targets = [TargetA, TargetB];
-        targets.AddRange(job.targetQueueB); // 🤔
+        targets.AddRange(job.targetQueueB);
         return targets.All(t => pawn.Reserve(t, job, 1, -1, null, errorOnFailed));
     }
 

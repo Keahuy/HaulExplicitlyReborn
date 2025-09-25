@@ -1,13 +1,10 @@
-﻿using RimWorld;
-using UnityEngine;
+﻿using UnityEngine;
 using Verse;
 
 namespace HaulExplicitly.Gizmo;
 
 public class Command_AutoForbiddenAfterHaulExplicitly : Command
 {
-    private static Command_AutoForbiddenAfterHaulExplicitly? _instance;
-
     private Thing thing;
 
     public Command_AutoForbiddenAfterHaulExplicitly(Thing t)
@@ -15,14 +12,13 @@ public class Command_AutoForbiddenAfterHaulExplicitly : Command
         thing = t;
         defaultDesc = "HaulExplicitly.AutoForbiddenAfterHaulExplicitlyDesc".Translate();
         hotKey = null;
-        _instance = this;
     }
 
     public override void ProcessInput(Event ev)
     {
         base.ProcessInput(ev);
         Data_DesignatorHaulExplicitly data = GameComponent_HaulExplicitly.GetManager(Find.CurrentMap).DataWithItem(thing) ?? throw new InvalidOperationException();
-        switch (data?.SwitchAutoForbidden(thing))
+        switch (data.SwitchAutoForbidden(thing))
         {
             case -1: break;
             case 0:
@@ -38,6 +34,6 @@ public class Command_AutoForbiddenAfterHaulExplicitly : Command
 
     public static bool RelevantToThing(Thing t)
     {
-        return GameComponent_HaulExplicitly.GetManager(t) != null ? GameComponent_HaulExplicitly.GetManager(t).DataWithItem(t) != null : false;
+        return GameComponent_HaulExplicitly.GetManager(t).DataWithItem(t) != null;
     }
 }
