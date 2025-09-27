@@ -29,7 +29,9 @@ public class Data_DesignatorHaulExplicitly : IExposable
 
     public List<InventoryRecord_DesignatorHaulExplicitly> inventory = [];
 
-    public List<Thing> items = [];
+    private readonly List<Thing> _items = [];
+
+    public IReadOnlyList<Thing> Items => _items;
 
     public List<Thing> itemsWillForbidden = [];
 
@@ -51,7 +53,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
                 continue;
             }
 
-            items.Add(t);
+            AddItem(t);
             // 尝试将物品加入一个可用的 Record ，如果没有可用的 Record 就新建一个
             if (!inventory.Any(record => record.TryAddItem(t)))
             {
@@ -78,9 +80,24 @@ public class Data_DesignatorHaulExplicitly : IExposable
         }
     }
 
+    // 🤔有人报告了以下报错
+    /*
+     Exception while saving HaulExplicitly.GameComponent_HaulExplicitly: System.NullReferenceException: Object reference not set to an instance of an object
+    [Ref ADF29D53]
+        at HaulExplicitly.Data_DesignatorHaulExplicitly+<>c.<Clean>b__21_0 (Verse.Thing i) [0x00000] in <967157c04ed94c0a87fe87607aabb351>:0
+    */
+    // 所以我添加了这个 null 检查
+    public void AddItem(Thing? thing)
+    {
+        if (thing != null)
+        {
+            _items.Add(thing);
+        }
+    }
+
     public int SwitchAutoForbidden(Thing t)
     {
-        if (!items.Contains(t)) return -1;
+        if (!_items.Contains(t)) return -1;
         InventoryRecord_DesignatorHaulExplicitly? ownerRecord = null;
         foreach (var record in inventory)
         {
@@ -117,7 +134,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
     public bool TryRemoveItem(Thing t, bool playerCancelled = false)
     {
         // 检查可行性
-        if (!items.Contains(t)) return false;
+        if (!_items.Contains(t)) return false;
 
         // 移除 Record 中的记录
         InventoryRecord_DesignatorHaulExplicitly? ownerRecord = Enumerable.FirstOrDefault(inventory, record => record.HasItem(t));
@@ -128,7 +145,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
         }
 
         // 移除 Data 中的记录
-        items.Remove(t);
+        _items.Remove(t);
 
         if (!t.GetIsInHaulExplicitlyDest()) // 如果 t 之前没有被 Designator_HaulExplicitly 搬运到指定地点
         {
@@ -140,18 +157,18 @@ public class Data_DesignatorHaulExplicitly : IExposable
         return true;
     }
 
-    public bool TryAddItemSplinter(Thing t) 
+    public bool TryAddItemSplinter(Thing t)
     {
         // 如果一堆物品没有完全搬运，那么殖民者手上的那一小堆物品会变成新的一堆物品，有自己独特的ID
         // 该方法将这种物品加入 Record
-        if (items.Contains(t))
+        if (_items.Contains(t))
         {
             return false;
         }
 
         foreach (var record in inventory.Where(record => record.CanAdd(t)))
         {
-            items.Add(t);
+            AddItem(t);
             record.TryAddItem(t, false);
             return true;
         }
@@ -162,7 +179,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
 
     public void Clean()
     {
-        var destroyedItems = new List<Thing>(items.Where(i => i.Destroyed));
+        var destroyedItems = new List<Thing>(_items.Where(i => i == null || i.Destroyed));
         foreach (var i in destroyedItems)
         {
             TryRemoveItem(i);
@@ -171,10 +188,10 @@ public class Data_DesignatorHaulExplicitly : IExposable
 
     public void ReloadItemsFromInventory()
     {
-        items = [];
+        _items.Clear();
         foreach (var t in inventory.SelectMany(r => r.Items))
         {
-            items.Add(t);
+            _items.Add(t);
         }
     }
 
@@ -287,7 +304,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
             else
             {
                 Thing item = itemsInCell.First();
-                if (itemsInCell.Count != 1 || items.Contains(item)) continue; // 🤔 对吗？itemsInCell有没有可能>1
+                if (itemsInCell.Count != 1 || _items.Contains(item)) continue; // 🤔 对吗？itemsInCell有没有可能>1
                 foreach (var record in inventory.Where(record => record.CanAdd(item) && item.stackCount != item.def.stackLimit))
                 {
                     destinationsLocal.Add(cell);

@@ -16,7 +16,7 @@ public class JobManager_DesignatorHaulExplicitly : IExposable
 
     public IEnumerable<Thing> HaulableThings
     {
-        get { return datas.Values.SelectMany(data => data.items); }
+        get { return datas.Values.SelectMany(data => data.Items); }
     }
 
     public void ExposeData()
@@ -48,6 +48,6 @@ public class JobManager_DesignatorHaulExplicitly : IExposable
 
     public Data_DesignatorHaulExplicitly? DataWithItem(Thing item)
     {
-        return datas.Values.FirstOrDefault(data => data.items.Contains(item));
+        return datas.Values.FirstOrDefault(data => data.Items.Contains(item));
     }
 }

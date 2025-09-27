@@ -103,7 +103,7 @@ public class GameComponent_HaulExplicitly : GameComponent
     public static void RegisterData(Data_DesignatorHaulExplicitly data)
     {
         JobManager_DesignatorHaulExplicitly manager = GetManager(data.Map);
-        foreach (Thing i in data.items)
+        foreach (Thing i in data.Items)
         {
             foreach (var d in manager.datas.Values)
             {
