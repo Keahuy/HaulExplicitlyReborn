@@ -81,6 +81,7 @@ public class GameComponent_HaulExplicitly : GameComponent
             // 如果该物品不存在，删除该物品的记录
             mgr.CleanGarbage();
         }
+
     }
 
     internal static int GetNewHaulExplicitlyDataID()

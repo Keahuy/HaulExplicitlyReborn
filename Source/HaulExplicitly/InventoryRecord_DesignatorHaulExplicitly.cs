@@ -1,6 +1,7 @@
 ﻿using HaulExplicitly.AI;
 using RimWorld;
 using Verse;
+using Verse.Noise;
 
 namespace HaulExplicitly;
 
@@ -20,7 +21,7 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
             // 调用 GameComponent_HaulExplicitly.GetManagers() 获得 mgr
             // 从 mgr 的 datas 中投影得到所有的 (Data_DesignatorHaulExplicitly)data 
             // 找出包含本 InventoryRecord_DesignatorHaulExplicitly 的 data *实例*
-            foreach (var data in from mgr in GameComponent_HaulExplicitly.GetManagers() from data in mgr.datas.Values where data.inventory.Contains(this) select data)
+            foreach (var data in from mgr in GameComponent_HaulExplicitly.GetManagers() from data in mgr.datas.Values where data.records.Contains(this) select data)
             {
                 // 与其建立弱引用
                 // 意义：防止互相引用导致GC不自动回收相关资源
@@ -38,7 +39,7 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
     {
         get
         {
-            _itemDef ??= Items.First().def;
+            _itemDef ??= items.First().def;
 
             return _itemDef;
         }
@@ -59,7 +60,7 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
     {
         get
         {
-            _itemStuff ??= Items.First().Stuff;
+            _itemStuff ??= items.First().Stuff;
 
             return _itemStuff;
         }
@@ -82,9 +83,9 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
     {
         get
         {
-            if (_miniDef == null && (Items.First() as MinifiedThing)?.InnerThing.def != null)
+            if (_miniDef == null && (items.First() as MinifiedThing)?.InnerThing.def != null)
             {
-                _miniDef = (Items.First() as MinifiedThing)?.InnerThing.def;
+                _miniDef = (items.First() as MinifiedThing)?.InnerThing.def;
             }
 
             return _miniDef;
@@ -119,19 +120,19 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
     public int NumStacksWillUse => StacksWorth(ItemDef, Math.Max(0, SetQuantity - MergeCapacity)) + NumMergeStacksWillUse;
 
     // 将会存储不同堆不同ID的同种物品
-    public List<Thing> Items = [];
+    public List<Thing> items = [];
 
     public void ExposeData()
     {
-        Scribe_Collections.Look(ref Items, "items", LookMode.Reference);
+        Scribe_Collections.Look(ref items, "items", LookMode.Reference);
         Scribe_Values.Look(ref _selectedQuantity, "selectedQuantity");
         Scribe_Values.Look(ref _playerSetQuantity, "setQuantity");
         Scribe_Values.Look(ref _mergeCapacity, "mergeCapacity");
         Scribe_Values.Look(ref _numMergeStacksWillUse, "numMergeStacksWillUse");
         Scribe_Values.Look(ref MovedQuantity, "movedQuantity");
         Scribe_Defs.Look(ref _itemDef, "itemDef");
-        Scribe_Defs.Look(ref _itemStuff, "itemStuff"); // 
-        Scribe_Defs.Look(ref _miniDef, "miniDef"); // 
+        Scribe_Defs.Look(ref _itemStuff, "itemStuff");
+        Scribe_Defs.Look(ref _miniDef, "miniDef");
     }
 
     public InventoryRecord_DesignatorHaulExplicitly()
@@ -142,7 +143,7 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
     public InventoryRecord_DesignatorHaulExplicitly(Thing initial, Data_DesignatorHaulExplicitly parentData)
     {
         _parentData = new WeakReference(parentData);
-        Items.Add(initial);
+        items.Add(initial);
         ItemDef = initial.def;
         ItemStuff = initial.Stuff;
         MiniDef = (initial as MinifiedThing)?.InnerThing.def;
@@ -188,13 +189,20 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
 
     public bool HasItem(Thing t)
     {
-        return Items.Contains(t);
+        bool result = false;
+        result = result || items.Contains(t);
+        /*if (t.def.saveCompressible)
+        {
+            result = result || itemCoordinates.Contains(t.Position);
+        }*/
+
+        return result;
     }
 
     public bool TryAddItem(Thing t, bool sideEffects = true)
     {
         if (!CanAdd(t)) return false;
-        Items.Add(t);
+        items.Add(t);
         if (sideEffects)
         {
             SelectedQuantity += t.stackCount;
@@ -205,13 +213,24 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
 
     public bool TryRemoveItem(Thing t, bool playerCancelled = false)
     {
-        bool r = Items.Remove(t);
-        if (!r || !playerCancelled) return r;
+        bool result = true;
+        if (items.Contains(t))
+        {
+            if (!items.Remove(t))
+            {
+                return false;
+            }
+        }
 
-        // 如果是 Command_Cancel_HaulExplicitly
-        SelectedQuantity -= t.stackCount;
-        _playerSetQuantity = Math.Min(_playerSetQuantity, SelectedQuantity);
-        return r;
+        switch (playerCancelled)
+        {
+            case false:
+                return result;
+            case true: // 如果是 Command_Cancel_HaulExplicitly
+                SelectedQuantity -= t.stackCount;
+                _playerSetQuantity = Math.Min(_playerSetQuantity, SelectedQuantity);
+                return result;
+        }
     }
 
     public int GetNumRemainingToHaul()

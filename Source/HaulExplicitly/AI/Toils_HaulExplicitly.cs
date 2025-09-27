@@ -42,7 +42,7 @@ public class Toils_HaulExplicitly
             if (!actor.CurJob.haulOpportunisticDuplicates) return;
             Thing? prospect = null;
             int bestDist = 999;
-            foreach (Thing item in driver.record.Items.Where(i => i != null && i.Spawned && WorkGiver_HaulExplicitly.CanGetThing(actor, i, false)))
+            foreach (Thing item in driver.record.items.Where(i => i != null && i.Spawned && WorkGiver_HaulExplicitly.CanGetThing(actor, i, false)))
             {
                 IntVec3 offset = item.Position - actor.Position;
                 int dist = Math.Abs(offset.x) + Math.Abs(offset.z);
