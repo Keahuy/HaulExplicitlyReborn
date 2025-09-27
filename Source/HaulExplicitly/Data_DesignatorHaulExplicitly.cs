@@ -191,7 +191,10 @@ public class Data_DesignatorHaulExplicitly : IExposable
         _items.Clear();
         foreach (var t in inventory.SelectMany(r => r.Items))
         {
-            _items.Add(t);
+            if (t != null)
+            {
+                _items.Add(t);
+            }
         }
     }
 

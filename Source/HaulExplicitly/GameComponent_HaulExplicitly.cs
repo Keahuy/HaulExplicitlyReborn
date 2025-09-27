@@ -12,12 +12,6 @@ public class GameComponent_HaulExplicitly : GameComponent
 
     private Dictionary<int, JobManager_DesignatorHaulExplicitly> managers = new();
 
-    /*private List<int> keys;
-
-    private List<JobManager_DesignatorHaulExplicitly> values;*/
-
-    /*private HashSet<Zone_Stockpile> retainingZones = [];*/
-
     public GameComponent_HaulExplicitly(Game game)
     {
         _instance = this;
@@ -26,14 +20,10 @@ public class GameComponent_HaulExplicitly : GameComponent
     public override void ExposeData()
     {
         base.ExposeData();
-        Scribe_Collections.Look(ref managers, "managers", LookMode.Value, LookMode.Deep /*, ref keys, ref values*/);
-        /*Scribe_Collections.Look(ref retainingZones, "holdingZones", LookMode.Reference);*/
+        Scribe_Collections.Look(ref managers, "managers", LookMode.Value, LookMode.Deep);
         if (Scribe.mode == LoadSaveMode.Saving)
         {
             CleanGarbage();
-            /*GameComponent_HaulExplicitly self = GetInstance();
-            var all_zones = Find.Maps.SelectMany(map => map.zoneManager.AllZones).OfType<Zone_Stockpile>().Select(zone => zone).ToList();
-            /*self.retainingZones.IntersectWith(all_zones);#1#*/
         }
     }
 

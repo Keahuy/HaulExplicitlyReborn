@@ -38,10 +38,7 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
     {
         get
         {
-            if (_itemDef == null)
-            {
-                _itemDef = Items.First().def;
-            }
+            _itemDef ??= Items.First().def;
 
             return _itemDef;
         }
@@ -62,10 +59,7 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
     {
         get
         {
-            if (_itemStuff == null)
-            {
-                _itemStuff = Items.First().Stuff;
-            }
+            _itemStuff ??= Items.First().Stuff;
 
             return _itemStuff;
         }
@@ -118,10 +112,7 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
         }
     }
 
-    public string Label
-    {
-        get { return GenLabel.ThingLabel(MiniDef ?? ItemDef, ItemStuff, SetQuantity).CapitalizeFirst(); }
-    }
+    public string Label => GenLabel.ThingLabel(MiniDef ?? ItemDef, ItemStuff, SetQuantity).CapitalizeFirst();
 
 
     // 需要占用的物品堆数 🤔不太明白
@@ -141,13 +132,6 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
         Scribe_Defs.Look(ref _itemDef, "itemDef");
         Scribe_Defs.Look(ref _itemStuff, "itemStuff"); // 
         Scribe_Defs.Look(ref _miniDef, "miniDef"); // 
-
-        /*if (Scribe.mode == LoadSaveMode.PostLoadInit && Items.Any())
-        {
-            _itemDef = Items.First().def;
-            _itemStuff = Items.First().Stuff;
-            _miniDef = (Items.First() as MinifiedThing)?.InnerThing.def;
-        }*/
     }
 
     public InventoryRecord_DesignatorHaulExplicitly()
