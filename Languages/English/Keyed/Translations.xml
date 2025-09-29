@@ -20,8 +20,4 @@
     <HaulExplicitly.InventoryLabel>Items to haul</HaulExplicitly.InventoryLabel>
     <HaulExplicitly.ItemHaulSetQuantity>Haul {{0}}x {ITEMTYPE}</HaulExplicitly.ItemHaulSetQuantity>
 
-    <!-- Notices -->
-    <HaulExplicitly.HaulExplicitlyUpdateNoticeLabel>HaulExplicitly Updated!</HaulExplicitly.HaulExplicitlyUpdateNoticeLabel>
-    <HaulExplicitly.HaulExplicitlyUpdateNoticeLabelDesc>In order to fix conflicts with other mods, I made significant changes to the implementation principle of this mod, so there will be errors when loading . You can save it and then loal it again, and those errors should disappear. Also, items that were originally set set to "Don't haul" need to be reset. (They will also display haul markers like a Chunk, which you can use the "Cancel" command to remove.) \n\n In addition, I removed the 'Retain items' command because I don't even need it myself. If you still need this feature, try the "Storage Refill Hysteresis" mod （ https://steamcommunity.com/sharedfiles/filedetails/?id=3273463237 )</HaulExplicitly.HaulExplicitlyUpdateNoticeLabelDesc>
-
 </LanguageData>

@@ -2,6 +2,6 @@
 <LanguageData>
   
   <!-- EN: hauling TargetA. -->
-  <HaulExplicitly.reportString>搬运命令目标物品A</HaulExplicitly.reportString>
+  <HaulExplicitly.reportString>正在搬运物品到指定位置</HaulExplicitly.reportString>
   
 </LanguageData>

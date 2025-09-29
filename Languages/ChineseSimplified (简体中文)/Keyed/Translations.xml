@@ -35,10 +35,4 @@
     <!-- EN: Haul {{0}}x {ITEMTYPE} -->
     <HaulExplicitly.ItemHaulSetQuantity>搬运{{0}}个{ITEMTYPE}</HaulExplicitly.ItemHaulSetQuantity>
 
-    <!-- Notices -->
-    <!-- EN: HaulExplicitly Updated! -->
-    <HaulExplicitly.HaulExplicitlyUpdateNoticeLabel>HaulExplicitly 重要更新!</HaulExplicitly.HaulExplicitlyUpdateNoticeLabel>
-    <!-- EN:     In order to fix conflicts with other mods, I made significant changes to the implementation principle of this mod, so there will be errors when loading . You can save it and then loal it again, and those errors should disappear. Also, items that were originally set set to "Don't haul" need to be reset. (They will also display haul markers like a Chunk, which you can use the "Cancel" command to remove.) \n    In addition, I removed the 'Retain items' command because I don't even need it myself. If you still need this feature, try the "Storage Refill Hysteresis" mod （ https://steamcommunity.com/sharedfiles/filedetails/?id=3273463237 ) -->
-    <HaulExplicitly.HaulExplicitlyUpdateNoticeLabelDesc>为了修复与其他MOD的冲突，我大改了本MOD 的实现原理，所以加载存档后会报错。你可以存档，然后再读取一次，那些报错应该就消失了。原本被设置Don't haul的物品需要重新被设置不可搬运。(它们上也会显示像搬运块堆一样的搬运标记，你可以用“取消”命令取消那些标记)\n\n此外，我删除了“维持区域”命令，因为我自己根本用不到这个。如果你还需要这个功能，试一试“存储区迟滞算法〔智能补货〕”mod (https://steamcommunity.com/sharedfiles/filedetails/?id=3273463237)</HaulExplicitly.HaulExplicitlyUpdateNoticeLabelDesc>
-
 </LanguageData>
