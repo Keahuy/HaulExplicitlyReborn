@@ -2,6 +2,7 @@
 using RimWorld;
 using UnityEngine;
 using Verse;
+using Verse.AI;
 
 namespace HaulExplicitly.Gizmo;
 
@@ -61,8 +62,24 @@ public class Designator_Unhaul : Designator
             return;
         }
 
-        t.SetDontMoved(true);
-        /*// 为目标物品打上anchor标志
-        Map.designationManager.AddDesignation(new Designation(t, Designation));*/
+        t.SetDontMoved(true);// 标记为禁止搬运
+        
+        // 取消与该物品有关的工作
+        foreach (Pawn p in Find.CurrentMap.mapPawns.PawnsInFaction(Faction.OfPlayer).ListFullCopy())
+        {
+            var jobs = new List<Job>(p.jobs.jobQueue.AsEnumerable().Select(j => j.job));
+            if (p.CurJob != null)
+            {
+                jobs.Add(p.CurJob);
+            }
+
+            foreach (var job in jobs)
+            {
+                if (job.targetA.Thing == t)
+                {
+                    p.jobs.EndCurrentOrQueuedJob(job, JobCondition.Incompletable);
+                }
+            }
+        }
     }
 }

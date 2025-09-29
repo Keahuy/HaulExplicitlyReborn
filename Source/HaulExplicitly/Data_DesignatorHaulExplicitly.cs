@@ -131,7 +131,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
         return records.FirstOrDefault(record => record.HasItem(t));
     }
 
-    public bool TryRemoveItem(Thing t, bool playerCancelled = false)
+    public bool TryRemoveItem(Thing t, bool playerCancelled = false, bool isToRemoveDestDrawing = false)
     {
         // 检查可行性
         if (!_items.Contains(t)) return false;
@@ -147,11 +147,11 @@ public class Data_DesignatorHaulExplicitly : IExposable
         // 移除 Data 中的记录
         _items.Remove(t);
 
+        if (isToRemoveDestDrawing) return true;// 在 WorkGiver_HaulExplicitly 中，TryRemoveItem 用来在 HaulExplicitly 完成后不再显示 DeliverableDestinations 绘制的与目标地点的连线。这时不应该取消禁止搬运。 
         if (!t.GetIsInHaulExplicitlyDest()) // 如果 t 之前没有被 Designator_HaulExplicitly 搬运到指定地点
         {
             // 恢复可以被搬运，移除 Anchor 标记
             t.SetDontMoved(false);
-            /*t.MapHeld.designationManager.TryRemoveDesignationOn(t, HaulExplicitlyDefOf.HaulExplicitly_Unhaul);*/
         }
 
         return true;
@@ -325,7 +325,6 @@ public class Data_DesignatorHaulExplicitly : IExposable
             return true;
         }
 
-        /*destinations = null;*/ // 🤔
         return false;
     }
 }

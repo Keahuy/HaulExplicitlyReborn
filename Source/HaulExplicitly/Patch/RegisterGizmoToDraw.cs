@@ -18,7 +18,7 @@ public class ReverseDesignatorDatabase_InitDesignators_Patch
     {
         var desListField = AccessTools.Field(typeof(ReverseDesignatorDatabase), "desList");
         var targetCtor = AccessTools.Constructor(typeof(Designator_ExtractSkull), Type.EmptyTypes);
-        var listAddMethod = AccessTools.Method(typeof(List<Designator>), nameof(List<Designator>.Add), new[] { typeof(Designator) });
+        var listAddMethod = AccessTools.Method(typeof(List<Designator>), nameof(List<Designator>.Add), [typeof(Designator)]);
         var RehaulCtor = AccessTools.Constructor(typeof(Designator_Rehaul), Type.EmptyTypes);
         var UnhaulCtor = AccessTools.Constructor(typeof(Designator_Unhaul), Type.EmptyTypes);
 
@@ -46,12 +46,6 @@ public class ReverseDesignatorDatabase_InitDesignators_Patch
                     
                     found1 = true;
                 }
-            }
-
-            if (found1)
-            {
-                /*Log.Error("HaulExplicitly: Gizmo Patch Succeed!");*/ // for testing
-                break;
             }
         }
     }

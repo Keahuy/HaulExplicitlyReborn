@@ -15,7 +15,7 @@ public class WorkGiver_HaulExplicitly : WorkGiver_Scanner
     public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
     {
         // 获取需要搬运的物品。如果成功获取，触发 WorkGiver_Scanner.HasJobOnThing -> WorkGiver_HaulExplicitly.JobOnThing
-        return GameComponent_HaulExplicitly.GetManager(pawn).HaulableThings.ToList();// 使用 ToList() 使返回的值为一个临时列表，从而不受外界修改干扰。防止：{pawn} threw exception in WorkGiver HaulExplicitly: System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
+        return GameComponent_HaulExplicitly.GetManager(pawn).HaulableThings.ToList(); // 使用 ToList() 使返回的值为一个临时列表，从而不受外界修改干扰。防止：{pawn} threw exception in WorkGiver HaulExplicitly: System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
     }
 
     public override bool ShouldSkip(Pawn pawn, bool forced = false)
@@ -31,9 +31,10 @@ public class WorkGiver_HaulExplicitly : WorkGiver_Scanner
         Data_DesignatorHaulExplicitly? data = GameComponent_HaulExplicitly.GetManager(t).DataWithItem(t);
         if (data == null) return null;
 
-        if (data.GetRecordWhichWithItem(t).GetNumRemainingToHaul() == 0)
+        var record = data.GetRecordWhichWithItem(t);
+        if (record.MovedQuantity == record.SetQuantity)
         {
-            data.TryRemoveItem(t, true);
+            data.TryRemoveItem(t, true, true);
             return null;
         }
 
