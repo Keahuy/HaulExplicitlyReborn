@@ -8,7 +8,6 @@ using Verse.AI;
 
 namespace HaulExplicitly.Patch;
 
-[HarmonyDebug]
 [HarmonyPatch(typeof(Toils_Haul))]
 public class PleaseDontHaulNearbySmoothly
 {
