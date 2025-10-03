@@ -1,7 +1,6 @@
 ﻿using HaulExplicitly.AI;
 using RimWorld;
 using Verse;
-using Verse.Noise;
 
 namespace HaulExplicitly;
 
@@ -83,7 +82,7 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
     {
         get
         {
-            if (_miniDef == null && (items.First() as MinifiedThing)?.InnerThing.def != null)
+            if (items.Any() && _miniDef == null && (items.First() as MinifiedThing)?.InnerThing.def != null)
             {
                 _miniDef = (items.First() as MinifiedThing)?.InnerThing.def;
             }
