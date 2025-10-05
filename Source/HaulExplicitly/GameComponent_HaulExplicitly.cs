@@ -20,11 +20,12 @@ public class GameComponent_HaulExplicitly : GameComponent
     public override void ExposeData()
     {
         base.ExposeData();
-        Scribe_Collections.Look(ref managers, "managers", LookMode.Value, LookMode.Deep);
         if (Scribe.mode == LoadSaveMode.Saving)
         {
             CleanGarbage();
         }
+
+        Scribe_Collections.Look(ref managers, "managers", LookMode.Value, LookMode.Deep);
     }
 
     private static GameComponent_HaulExplicitly GetInstance()
@@ -78,7 +79,6 @@ public class GameComponent_HaulExplicitly : GameComponent
 
         foreach (JobManager_DesignatorHaulExplicitly mgr in self.managers.Values)
         {
-            // 如果该物品不存在，删除该物品的记录
             mgr.CleanGarbage();
         }
 

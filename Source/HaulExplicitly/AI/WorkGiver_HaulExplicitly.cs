@@ -30,7 +30,7 @@ public class WorkGiver_HaulExplicitly : WorkGiver_Scanner
 
         Data_DesignatorHaulExplicitly? data = GameComponent_HaulExplicitly.GetManager(t).DataWithItem(t);
         if (data == null) return null;
-
+        
         var record = data.GetRecordWhichWithItem(t);
         if (record.MovedQuantity == record.SetQuantity)
         {

@@ -135,13 +135,18 @@ public class Data_DesignatorHaulExplicitly : IExposable
     {
         // 检查可行性
         if (!_items.Contains(t)) return false;
-        if (!t.Spawned) return false;// record 里为了避免报错已经先一步把 t 移除了，所以找不到ownerRecord。这里加入检查避免去找ownerRecord
-        
+        if (!t.Spawned) return false; // record 里为了避免报错已经先一步把 t 移除了，所以找不到ownerRecord。这里加入检查避免去找ownerRecord
+
         // 移除 Record 中的记录
         InventoryRecord_DesignatorHaulExplicitly? ownerRecord = Enumerable.FirstOrDefault(records, record => record.HasItem(t));
-        if (ownerRecord == null || !ownerRecord.TryRemoveItem(t, playerCancelled))
+        if (ownerRecord == null)
         {
-            Log.Error("HaulExplicitly: Something went wrong."+ (ownerRecord == null ? "ownerRecord == null" : "!ownerRecord.TryRemoveItem(t, playerCancelled)"));
+            return false;
+        }
+
+        if (!ownerRecord.TryRemoveItem(t, playerCancelled))
+        {
+            Log.Error("HaulExplicitly: Something went wrong.");
             return false;
         }
 

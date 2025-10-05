@@ -30,8 +30,13 @@ public class JobManager_DesignatorHaulExplicitly : IExposable
         var keys = new List<int>(datas.Keys);
         foreach (int k in keys)
         {
-            // 如果该物品不存在，删除该物品的记录
+            // 获取所有被摧毁了的物品的列表，删除列表中物品的记录
             datas[k].Clean();
+            // 如果一个 data 中没有任何 item 的记录，删除此 data
+            if (!datas[k].records.Any(r => r.items == null))
+            {
+                datas.Remove(k);
+            }
         }
     }
 

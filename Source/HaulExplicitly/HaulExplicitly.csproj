@@ -9,6 +9,7 @@
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
       <OutputPath>F:\Steam\steamapps\common\RimWorld\Mods\HaulExplicitlyReborn\Assemblies\</OutputPath>
+      <Optimize>true</Optimize>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">

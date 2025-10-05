@@ -51,8 +51,16 @@ public class JobDriver_HaulExplicitly : JobDriver
     public void Init() // 当获取 _data 或 _record 为 null 时，初始化
     {
         Thing targetItem = job.targetA.Thing;
-        _data = GameComponent_HaulExplicitly.GetManager(targetItem.MapHeld).datas[DataIndex];
-        _record = _data.records.FirstOrDefault(r=>r.CanAdd(targetItem));
+        if (targetItem.MapHeld == null)
+        {
+            _data = new Data_DesignatorHaulExplicitly();
+        }
+        else
+        {
+            _data = GameComponent_HaulExplicitly.GetManager(targetItem.MapHeld).datas[DataIndex];
+        }
+
+        _record = _data.records.FirstOrDefault(r => r.CanAdd(targetItem));
         if (_record != null) return;
         _record = new InventoryRecord_DesignatorHaulExplicitly(targetItem, _data);
         _data.records.Add(_record);
@@ -63,7 +71,7 @@ public class JobDriver_HaulExplicitly : JobDriver
     {
         Thing thing = job.GetTarget(TargetIndex.A).Thing;
         thing.SetDontMoved(true);
-        
+
         List<LocalTargetInfo> targets = [TargetA, TargetB];
         targets.AddRange(job.targetQueueB);
         return targets.All(t => pawn.Reserve(t, job, 1, -1, null, errorOnFailed));
