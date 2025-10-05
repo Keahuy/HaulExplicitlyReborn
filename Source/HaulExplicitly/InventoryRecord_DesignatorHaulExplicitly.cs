@@ -123,6 +123,14 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
 
     public void ExposeData()
     {
+        if (Scribe.mode == LoadSaveMode.Saving) // 保存存档时
+        {
+            foreach (var item in items.ToList().Where(item => !item.Spawned))
+            {
+                TryRemoveItem(item);// 有时没有全部搬完地图就被摧毁了，导致需要搬运的物品也被摧毁。加入这个来避免 Exception while saving HaulExplicitly.GameComponent_HaulExplicitly: System.NullReferenceException: Object reference not set to an instance of an object
+            }
+        }
+        
         Scribe_Collections.Look(ref items, "items", LookMode.Reference);
         Scribe_Values.Look(ref _selectedQuantity, "selectedQuantity");
         Scribe_Values.Look(ref _playerSetQuantity, "setQuantity");

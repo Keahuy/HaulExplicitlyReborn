@@ -12,15 +12,7 @@ public static class Utilities
     public static Thing? GetFirstAlwaysHaulable(this IntVec3 c, Map map)
     {
         List<Thing> list = map.thingGrid.ThingsListAt(c);
-        for (int i = 0; i < list.Count; i++)
-        {
-            if (list[i].def.alwaysHaulable)
-            {
-                return list[i];
-            }
-        }
-
-        return null;
+        return Enumerable.FirstOrDefault(list, t => t.def.alwaysHaulable);
     }
 
     public static IEnumerable<Verse.Gizmo> GetHaulExplicitlyGizmos(Thing t)
@@ -31,21 +23,19 @@ public static class Utilities
         }
     }
     
-    public static void UpdataLabelAndIcon(this Command_AutoForbiddenAfterHaulExplicitly instance ,Thing t)
+    public static void UpdateLabelAndIcon(this Command_AutoForbiddenAfterHaulExplicitly instance ,Thing t)
     {
         var data = GameComponent_HaulExplicitly.GetManager(t).DataWithItem(t);
-        if (data!= null)
+        if (data == null) return;
+        if (data.itemsWillForbidden.Contains(t))
         {
-            if (data.itemsWillForbidden.Contains(t))
-            {
-                instance.defaultLabel = "HaulExplicitly.AutoForbiddenAfterHaulExplicitlyIsOnLabel".Translate();
-                instance.icon = ContentFinder<Texture2D>.Get("Buttons/AutoForbiddenAfterHaulExplicitlyForbid");
-            }
-            else
-            {
-                instance.defaultLabel = "HaulExplicitly.AutoForbiddenAfterHaulExplicitlyIsOffLabel".Translate();
-                instance.icon = ContentFinder<Texture2D>.Get("Buttons/AutoForbiddenAfterHaulExplicitlyNoForbid");
-            }
+            instance.defaultLabel = "HaulExplicitly.AutoForbiddenAfterHaulExplicitlyIsOnLabel".Translate();
+            instance.icon = ContentFinder<Texture2D>.Get("Buttons/AutoForbiddenAfterHaulExplicitlyForbid");
+        }
+        else
+        {
+            instance.defaultLabel = "HaulExplicitly.AutoForbiddenAfterHaulExplicitlyIsOffLabel".Translate();
+            instance.icon = ContentFinder<Texture2D>.Get("Buttons/AutoForbiddenAfterHaulExplicitlyNoForbid");
         }
     }
     
@@ -58,12 +48,9 @@ public static class Utilities
             {
                 jobs.Add(p.CurJob);
             }
-            foreach (var job in jobs)
+            foreach (var job in jobs.Where(job => job.def.driverClass == typeof(JobDriver_HaulExplicitly) && job.targetA.Thing == t))
             {
-                if (job.def.driverClass == typeof(JobDriver_HaulExplicitly) && job.targetA.Thing == t)
-                {
-                    p.jobs.EndCurrentOrQueuedJob(job, JobCondition.Incompletable);
-                }
+                p.jobs.EndCurrentOrQueuedJob(job, JobCondition.Incompletable);
             }
         }
     }

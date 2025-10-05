@@ -77,7 +77,7 @@ class Thing_GetGizmos_Patch
         if (Command_AutoForbiddenAfterHaulExplicitly.RelevantToThing(__instance))
         {
             Command_AutoForbiddenAfterHaulExplicitly result = new Command_AutoForbiddenAfterHaulExplicitly(__instance);
-            result.UpdataLabelAndIcon(__instance);
+            result.UpdateLabelAndIcon(__instance);
             yield return result;
         }
     }

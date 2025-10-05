@@ -135,19 +135,20 @@ public class Data_DesignatorHaulExplicitly : IExposable
     {
         // 检查可行性
         if (!_items.Contains(t)) return false;
-
+        if (!t.Spawned) return false;// record 里为了避免报错已经先一步把 t 移除了，所以找不到ownerRecord。这里加入检查避免去找ownerRecord
+        
         // 移除 Record 中的记录
         InventoryRecord_DesignatorHaulExplicitly? ownerRecord = Enumerable.FirstOrDefault(records, record => record.HasItem(t));
         if (ownerRecord == null || !ownerRecord.TryRemoveItem(t, playerCancelled))
         {
-            Log.Error("HaulExplicitly: Something went wrong.");
+            Log.Error("HaulExplicitly: Something went wrong."+ (ownerRecord == null ? "ownerRecord == null" : "!ownerRecord.TryRemoveItem(t, playerCancelled)"));
             return false;
         }
 
         // 移除 Data 中的记录
         _items.Remove(t);
 
-        if (isToRemoveDestDrawing) return true;// 在 WorkGiver_HaulExplicitly 中，TryRemoveItem 用来在 HaulExplicitly 完成后不再显示 DeliverableDestinations 绘制的与目标地点的连线。这时不应该取消禁止搬运。 
+        if (isToRemoveDestDrawing) return true; // 在 WorkGiver_HaulExplicitly 中，TryRemoveItem 用来在 HaulExplicitly 完成后不再显示 DeliverableDestinations 绘制的与目标地点的连线。这时不应该取消禁止搬运。 
         if (!t.GetIsInHaulExplicitlyDest()) // 如果 t 之前没有被 Designator_HaulExplicitly 搬运到指定地点
         {
             // 恢复可以被搬运，移除 Anchor 标记
@@ -179,8 +180,8 @@ public class Data_DesignatorHaulExplicitly : IExposable
 
     public void Clean()
     {
-        var destroyedItems = new List<Thing>(_items.Where(i => i == null || i.Destroyed));
-        foreach (var i in destroyedItems)
+        var destroyedItems = new List<Thing>(_items.Where(i => i.Destroyed));
+        foreach (Thing i in destroyedItems)
         {
             TryRemoveItem(i);
         }
