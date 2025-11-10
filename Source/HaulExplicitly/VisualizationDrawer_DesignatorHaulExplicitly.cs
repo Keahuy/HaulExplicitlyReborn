@@ -7,12 +7,9 @@ namespace HaulExplicitly;
 
 public class HaulExplicitlyPostingVisualizationDrawer
 {
-    private static List<int> postings_drawn_this_frame = new();
+    private static List<int> postingsDrawnThisFrame = new();
 
-    private static float alt
-    {
-        get { return AltitudeLayer.MetaOverlays.AltitudeFor(); }
-    }
+    private static float alt => AltitudeLayer.MetaOverlays.AltitudeFor();
 
     public static void DrawForItem(Thing item)
     {
@@ -35,16 +32,16 @@ public class HaulExplicitlyPostingVisualizationDrawer
             GenDraw.DrawLineBetween(start, start + line_vector);
         }
 
-        if (postings_drawn_this_frame.Contains(data.ID))
+        if (postingsDrawnThisFrame.Contains(data.ID))
             return;
-        postings_drawn_this_frame.Add(data.ID);
+        postingsDrawnThisFrame.Add(data.ID);
         //draw circle
         GenDraw.DrawCircleOutline(circle_center, data.visualizationRadius);
     }
 
     public static void Clear()
     {
-        postings_drawn_this_frame.Clear();
+        postingsDrawnThisFrame.Clear();
     }
 }
 

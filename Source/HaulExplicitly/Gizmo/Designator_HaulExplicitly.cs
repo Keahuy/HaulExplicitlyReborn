@@ -77,7 +77,7 @@ public class Designator_HaulExplicitly : Designator
     public override void DoExtraGuiControls(float leftX, float bottomY)
     {
         Data_DesignatorHaulExplicitly dataLocal = data ?? throw new InvalidOperationException();
-        var records = new List<InventoryRecord_DesignatorHaulExplicitly>(dataLocal.records.OrderBy(r => r.Label));
+        var records = new List<InventoryRecord_DesignatorHaulExplicitly>(dataLocal.inventory.OrderBy(r => r.Label));
         const float max_height = 450f;
         const float width = 268f;
         const float row_height = 28f;

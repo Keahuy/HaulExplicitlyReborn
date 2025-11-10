@@ -20,7 +20,7 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
             // 调用 GameComponent_HaulExplicitly.GetManagers() 获得 mgr
             // 从 mgr 的 datas 中投影得到所有的 (Data_DesignatorHaulExplicitly)data 
             // 找出包含本 InventoryRecord_DesignatorHaulExplicitly 的 data *实例*
-            foreach (var data in from mgr in GameComponent_HaulExplicitly.GetManagers() from data in mgr.datas.Values where data.records.Contains(this) select data)
+            foreach (var data in from mgr in GameComponent_HaulExplicitly.GetManagers() from data in mgr.datas.Values where data.inventory.Contains(this) select data)
             {
                 // 与其建立弱引用
                 // 意义：防止互相引用导致GC不自动回收相关资源

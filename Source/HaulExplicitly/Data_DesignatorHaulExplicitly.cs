@@ -27,7 +27,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
 
     public float visualizationRadius;
 
-    public List<InventoryRecord_DesignatorHaulExplicitly> records = [];
+    public List<InventoryRecord_DesignatorHaulExplicitly> inventory = [];
 
     private readonly List<Thing> _items = [];
 
@@ -55,10 +55,10 @@ public class Data_DesignatorHaulExplicitly : IExposable
 
             AddItem(t);
             // 尝试将物品加入一个可用的 Record ，如果没有可用的 Record 就新建一个
-            if (!records.Any(record => record.TryAddItem(t)))
+            if (!inventory.Any(record => record.TryAddItem(t)))
             {
-                // 初始化 records 字段
-                records.Add(new InventoryRecord_DesignatorHaulExplicitly(t, this));
+                // 初始化 inventory 字段
+                inventory.Add(new InventoryRecord_DesignatorHaulExplicitly(t, this));
             }
         }
     }
@@ -67,7 +67,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
     {
         Scribe_Values.Look(ref _id, "dataId");
         Scribe_References.Look(ref _map, "map", true);
-        Scribe_Collections.Look(ref records, "inventory", LookMode.Deep); // 🤔inventory 是历史遗留问题，为了不让订阅者报错，暂时不改了
+        Scribe_Collections.Look(ref inventory, "inventory", LookMode.Deep); // 🤔inventory 是历史遗留问题，为了不让订阅者报错，暂时不改了
         Scribe_Collections.Look(ref destinations, "destinations", LookMode.Value);
         Scribe_Values.Look(ref cursor, "cursor");
         Scribe_Values.Look(ref center, "center");
@@ -99,7 +99,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
     {
         if (!_items.Contains(t)) return -1;
         InventoryRecord_DesignatorHaulExplicitly? ownerRecord = null;
-        foreach (var record in records)
+        foreach (var record in inventory)
         {
             if (record.HasItem(t))
             {
@@ -128,7 +128,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
 
     public InventoryRecord_DesignatorHaulExplicitly GetRecordWhichWithItem(Thing t)
     {
-        return records.FirstOrDefault(record => record.HasItem(t));
+        return inventory.FirstOrDefault(record => record.HasItem(t));
     }
 
     public bool TryRemoveItem(Thing t, bool playerCancelled = false, bool isToRemoveDestDrawing = false)
@@ -138,7 +138,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
         if (!t.Spawned) return false; // record 里为了避免报错已经先一步把 t 移除了，所以找不到ownerRecord。这里加入检查避免去找ownerRecord
 
         // 移除 Record 中的记录
-        InventoryRecord_DesignatorHaulExplicitly? ownerRecord = Enumerable.FirstOrDefault(records, record => record.HasItem(t));
+        InventoryRecord_DesignatorHaulExplicitly? ownerRecord = Enumerable.FirstOrDefault(inventory, record => record.HasItem(t));
         if (ownerRecord == null)
         {
             return false;
@@ -172,7 +172,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
             return false;
         }
 
-        foreach (var record in records.Where(record => record.CanAdd(t)))
+        foreach (var record in inventory.Where(record => record.CanAdd(t)))
         {
             AddItem(t);
             record.TryAddItem(t, false);
@@ -195,7 +195,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
     public void ReloadItemsFromInventory()
     {
         _items.Clear();
-        foreach (var t in records.SelectMany(r => r.items))
+        foreach (var t in inventory.SelectMany(r => r.items))
         {
             _items.Add(t);
         }
@@ -203,7 +203,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
 
     private void InventoryResetMerge()
     {
-        foreach (InventoryRecord_DesignatorHaulExplicitly record in records)
+        foreach (InventoryRecord_DesignatorHaulExplicitly record in inventory)
         {
             record.ResetMerge();
         }
@@ -294,7 +294,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
 
         // 使用 HaulExplicitly 命令时
         cursor = c;
-        int minStacks = records.Sum(record => record.NumStacksWillUse);
+        int minStacks = inventory.Sum(record => record.NumStacksWillUse);
         // 🤔
         InventoryResetMerge();
         var destinationsLocal = new List<IntVec3>();
@@ -311,7 +311,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
             {
                 Thing item = itemsInCell.First();
                 if (itemsInCell.Count != 1 || _items.Contains(item)) continue; // 🤔 对吗？itemsInCell有没有可能>1
-                foreach (var record in records.Where(record => record.CanAdd(item) && item.stackCount != item.def.stackLimit))
+                foreach (var record in inventory.Where(record => record.CanAdd(item) && item.stackCount != item.def.stackLimit))
                 {
                     destinationsLocal.Add(cell);
                     record.AddMergeCell(item.stackCount);
@@ -321,7 +321,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
 
             if (destinationsLocal.Count < minStacks) continue;
 
-            int stacks = records.Sum(record => record.NumStacksWillUse);
+            int stacks = inventory.Sum(record => record.NumStacksWillUse);
             if (destinationsLocal.Count < stacks) continue;
             //success operations
             Vector3 sum = destinationsLocal.Aggregate(Vector3.zero, (current, dest) => current + dest.ToVector3Shifted());

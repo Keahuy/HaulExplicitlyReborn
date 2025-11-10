@@ -13,7 +13,7 @@ public class PleaseDontCompressMyChunk
     {
         var managers = GameComponent_HaulExplicitly.GetManagers();
         var datas = managers.SelectMany(mgr => mgr.datas.Values);
-        var records = datas.SelectMany(d => d.records);
+        var records = datas.SelectMany(d => d.inventory);
         var items = records.SelectMany(r => r.items);
         foreach (var item in items)
         {

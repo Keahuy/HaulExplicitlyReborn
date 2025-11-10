@@ -58,10 +58,13 @@ class Thing_GetGizmos_Patch
     [UsedImplicitly]
     static IEnumerable<Verse.Gizmo> AddHaulExplicitlyGizmos(IEnumerable<Verse.Gizmo> gizmos, Thing __instance)
     {
+        // 返回原本应该返回的内容
         foreach (Verse.Gizmo gizmo in gizmos)
         {
             yield return gizmo;
         }
+        
+        // 添加本mod的gizmos
         if (__instance.def.EverHaulable)
         {
             yield return new Designator_HaulExplicitly();

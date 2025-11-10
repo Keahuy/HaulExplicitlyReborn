@@ -141,7 +141,6 @@ public class DeliverableDestinations
     public int FreeSpaceInCells(IEnumerable<IntVec3> cells)
     {
         // 搬运目标地点所有格子对被搬运物品的总剩余承载能力
-        /*int space = 0;*/
 
         foreach (var c in cells)
         {
