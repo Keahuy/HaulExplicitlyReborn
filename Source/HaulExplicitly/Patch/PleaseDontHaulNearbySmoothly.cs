@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Reflection.Emit;
 using HarmonyLib;
 using HaulExplicitly.Extension;
 using JetBrains.Annotations;
@@ -14,6 +13,7 @@ public class PleaseDontHaulNearbySmoothly
     [UsedImplicitly]
     static MethodBase? TargetMethod()
     {
+        // Verse.AI.Toils_Haul.CheckForGetOpportunityDuplicate
         var displayClass = typeof(Toils_Haul).GetNestedType("<>c__DisplayClass5_1", BindingFlags.NonPublic);
         if (displayClass == null)
         {

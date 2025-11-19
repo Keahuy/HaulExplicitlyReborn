@@ -34,5 +34,9 @@
     <HaulExplicitly.InventoryLabel>待搬运物品</HaulExplicitly.InventoryLabel>
     <!-- EN: Haul {{0}}x {ITEMTYPE} -->
     <HaulExplicitly.ItemHaulSetQuantity>搬运{{0}}个{ITEMTYPE}</HaulExplicitly.ItemHaulSetQuantity>
+    
+    <!-- Notices -->
+    <!-- EN: HaulExplicitly: This item has been set don't haul -->
+    <HaulExplicitly.ThisItemHasBeenSetDontHaul>HaulExplicitly: 此物品已设置为禁止搬运。</HaulExplicitly.ThisItemHasBeenSetDontHaul>>
 
 </LanguageData>

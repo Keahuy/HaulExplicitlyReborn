@@ -20,4 +20,7 @@
     <HaulExplicitly.InventoryLabel>Items to haul</HaulExplicitly.InventoryLabel>
     <HaulExplicitly.ItemHaulSetQuantity>Haul {{0}}x {ITEMTYPE}</HaulExplicitly.ItemHaulSetQuantity>
 
+    <!-- Notices -->
+    <HaulExplicitly.ThisItemHasBeenSetDontHaul>HaulExplicitly: This item has been set don't haul</HaulExplicitly.ThisItemHasBeenSetDontHaul>>
+    
 </LanguageData>

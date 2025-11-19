@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HaulExplicitly", "HaulExplicitly.csproj", "{4D07898B-0EEE-453C-BFE2-5EA6C3F7EB53}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HaulExplicitlyCompatibilityWithPickUpAndHaul", "..\HaulExplicitlyCompatibilityWithPickUpAndHaul\HaulExplicitlyCompatibilityWithPickUpAndHaul.csproj", "{C83EBCD0-E558-4C57-B03F-18299336E688}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{4D07898B-0EEE-453C-BFE2-5EA6C3F7EB53}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D07898B-0EEE-453C-BFE2-5EA6C3F7EB53}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D07898B-0EEE-453C-BFE2-5EA6C3F7EB53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C83EBCD0-E558-4C57-B03F-18299336E688}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C83EBCD0-E558-4C57-B03F-18299336E688}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C83EBCD0-E558-4C57-B03F-18299336E688}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C83EBCD0-E558-4C57-B03F-18299336E688}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

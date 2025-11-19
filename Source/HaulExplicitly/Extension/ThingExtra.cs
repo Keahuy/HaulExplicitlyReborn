@@ -49,27 +49,31 @@ public class GameComponent_ThingExtraData : GameComponent
         Scribe_Collections.Look(ref keys, "haulExplicitly_extraData_keys", LookMode.Reference);
         Scribe_Collections.Look(ref values, "haulExplicitly_extraData_values", LookMode.Deep);
 
-        // 读档后重建字典（并跳过 null / 已销毁的 key）
-        if (Scribe.mode == LoadSaveMode.PostLoadInit)
+        switch (Scribe.mode)
         {
-            extraData.Clear();
-            if (keys != null && values != null)
+            // 读档后重建字典（并跳过 null / 已销毁的 key）
+            case LoadSaveMode.PostLoadInit:
             {
-                int count = Math.Min(keys.Count, values.Count);
-                for (int i = 0; i < count; i++)
+                extraData.Clear();
+                if (keys != null && values != null)
                 {
-                    var k = keys[i];
-                    var v = values[i];
-                    if (k != null && v != null && !k.Destroyed)
+                    int count = Math.Min(keys.Count, values.Count);
+                    for (int i = 0; i < count; i++)
                     {
-                        extraData[k] = v;
+                        var k = keys[i];
+                        var v = values[i];
+                        if (k != null && v != null && !k.Destroyed)
+                        {
+                            extraData[k] = v;
+                        }
                     }
                 }
-            }
 
-            // 释放临时列表
-            keys = null;
-            values = null;
+                // 释放临时列表
+                keys = null;
+                values = null;
+                break;
+            }
         }
     }
 
