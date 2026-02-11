@@ -1,0 +1,10 @@
+F:\Steam\steamapps\common\RimWorld\Mods\_HaulExplicitlyReborn\ModCompatibility\PickUpAndHaul\Assemblies\net48\HaulExplicitly.PickUpAndHaulCompatibility.dll
+F:\Steam\steamapps\common\RimWorld\Mods\_HaulExplicitlyReborn\ModCompatibility\PickUpAndHaul\Assemblies\net48\HaulExplicitly.PickUpAndHaulCompatibility.pdb
+F:\Steam\steamapps\common\RimWorld\Mods\_HaulExplicitlyReborn\Source\HaulExplicitly.PickUpAndHaulCompatibility\obj\Debug\net48\HaulExplicitly.PickUpAndHaulCompatibility.csproj.AssemblyReference.cache
+F:\Steam\steamapps\common\RimWorld\Mods\_HaulExplicitlyReborn\Source\HaulExplicitly.PickUpAndHaulCompatibility\obj\Debug\net48\HaulExplicitly.PickUpAndHaulCompatibility.GeneratedMSBuildEditorConfig.editorconfig
+F:\Steam\steamapps\common\RimWorld\Mods\_HaulExplicitlyReborn\Source\HaulExplicitly.PickUpAndHaulCompatibility\obj\Debug\net48\HaulExplicitly.PickUpAndHaulCompatibility.AssemblyInfoInputs.cache
+F:\Steam\steamapps\common\RimWorld\Mods\_HaulExplicitlyReborn\Source\HaulExplicitly.PickUpAndHaulCompatibility\obj\Debug\net48\HaulExplicitly.PickUpAndHaulCompatibility.AssemblyInfo.cs
+F:\Steam\steamapps\common\RimWorld\Mods\_HaulExplicitlyReborn\Source\HaulExplicitly.PickUpAndHaulCompatibility\obj\Debug\net48\HaulExplicitly.PickUpAndHaulCompatibility.csproj.CoreCompileInputs.cache
+F:\Steam\steamapps\common\RimWorld\Mods\_HaulExplicitlyReborn\Source\HaulExplicitly.PickUpAndHaulCompatibility\obj\Debug\net48\HaulExplicitly.PickUpAndHaulCompatibility.sourcelink.json
+F:\Steam\steamapps\common\RimWorld\Mods\_HaulExplicitlyReborn\Source\HaulExplicitly.PickUpAndHaulCompatibility\obj\Debug\net48\HaulExplicitly.PickUpAndHaulCompatibility.dll
+F:\Steam\steamapps\common\RimWorld\Mods\_HaulExplicitlyReborn\Source\HaulExplicitly.PickUpAndHaulCompatibility\obj\Debug\net48\HaulExplicitly.PickUpAndHaulCompatibility.pdb

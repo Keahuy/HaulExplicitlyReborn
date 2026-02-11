@@ -1,0 +1,10 @@
+F:\Steam\steamapps\common\RimWorld\Mods\_HaulExplicitlyReborn\ModCompatibility\WhileYoureUp\Assemblies\net48\HaulExplicitly.WhileYoureUpCompatibility.dll
+F:\Steam\steamapps\common\RimWorld\Mods\_HaulExplicitlyReborn\ModCompatibility\WhileYoureUp\Assemblies\net48\HaulExplicitly.WhileYoureUpCompatibility.pdb
+F:\Steam\steamapps\common\RimWorld\Mods\_HaulExplicitlyReborn\Source\HaulExplicitly.WhileYoureUpCompatibility\obj\Debug\net48\HaulExplicitly.WhileYoureUpCompatibility.csproj.AssemblyReference.cache
+F:\Steam\steamapps\common\RimWorld\Mods\_HaulExplicitlyReborn\Source\HaulExplicitly.WhileYoureUpCompatibility\obj\Debug\net48\HaulExplicitly.WhileYoureUpCompatibility.GeneratedMSBuildEditorConfig.editorconfig
+F:\Steam\steamapps\common\RimWorld\Mods\_HaulExplicitlyReborn\Source\HaulExplicitly.WhileYoureUpCompatibility\obj\Debug\net48\HaulExplicitly.WhileYoureUpCompatibility.AssemblyInfoInputs.cache
+F:\Steam\steamapps\common\RimWorld\Mods\_HaulExplicitlyReborn\Source\HaulExplicitly.WhileYoureUpCompatibility\obj\Debug\net48\HaulExplicitly.WhileYoureUpCompatibility.AssemblyInfo.cs
+F:\Steam\steamapps\common\RimWorld\Mods\_HaulExplicitlyReborn\Source\HaulExplicitly.WhileYoureUpCompatibility\obj\Debug\net48\HaulExplicitly.WhileYoureUpCompatibility.csproj.CoreCompileInputs.cache
+F:\Steam\steamapps\common\RimWorld\Mods\_HaulExplicitlyReborn\Source\HaulExplicitly.WhileYoureUpCompatibility\obj\Debug\net48\HaulExplicitly.WhileYoureUpCompatibility.sourcelink.json
+F:\Steam\steamapps\common\RimWorld\Mods\_HaulExplicitlyReborn\Source\HaulExplicitly.WhileYoureUpCompatibility\obj\Debug\net48\HaulExplicitly.WhileYoureUpCompatibility.dll
+F:\Steam\steamapps\common\RimWorld\Mods\_HaulExplicitlyReborn\Source\HaulExplicitly.WhileYoureUpCompatibility\obj\Debug\net48\HaulExplicitly.WhileYoureUpCompatibility.pdb

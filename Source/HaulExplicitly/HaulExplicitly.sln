@@ -2,9 +2,9 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HaulExplicitly", "HaulExplicitly.csproj", "{4D07898B-0EEE-453C-BFE2-5EA6C3F7EB53}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HaulExplicitlyCompatibilityWithPickUpAndHaul", "..\HaulExplicitlyCompatibilityWithPickUpAndHaul\HaulExplicitlyCompatibilityWithPickUpAndHaul.csproj", "{C83EBCD0-E558-4C57-B03F-18299336E688}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HaulExplicitly.WhileYoureUpCompatibility", "..\HaulExplicitly.WhileYoureUpCompatibility\HaulExplicitly.WhileYoureUpCompatibility.csproj", "{70709CD8-4144-4B9E-87CE-FEB8FC0A8197}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HaulExplicitly.PickUpAndHaulCompatibility", "..\HaulExplicitly.PickUpAndHaulCompatibility\HaulExplicitly.PickUpAndHaulCompatibility.csproj", "{E6AFA472-1E38-4577-BA38-7C17A3CE3A70}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,13 +16,13 @@ Global
 		{4D07898B-0EEE-453C-BFE2-5EA6C3F7EB53}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D07898B-0EEE-453C-BFE2-5EA6C3F7EB53}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D07898B-0EEE-453C-BFE2-5EA6C3F7EB53}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C83EBCD0-E558-4C57-B03F-18299336E688}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C83EBCD0-E558-4C57-B03F-18299336E688}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C83EBCD0-E558-4C57-B03F-18299336E688}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C83EBCD0-E558-4C57-B03F-18299336E688}.Release|Any CPU.Build.0 = Release|Any CPU
 		{70709CD8-4144-4B9E-87CE-FEB8FC0A8197}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{70709CD8-4144-4B9E-87CE-FEB8FC0A8197}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70709CD8-4144-4B9E-87CE-FEB8FC0A8197}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70709CD8-4144-4B9E-87CE-FEB8FC0A8197}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6AFA472-1E38-4577-BA38-7C17A3CE3A70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6AFA472-1E38-4577-BA38-7C17A3CE3A70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6AFA472-1E38-4577-BA38-7C17A3CE3A70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6AFA472-1E38-4577-BA38-7C17A3CE3A70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,25 +1,23 @@
 ﻿using HarmonyLib;
 using HaulExplicitly.Extension;
 using JetBrains.Annotations;
+using Verse;
 using Verse.AI;
 
 namespace HaulExplicitly.WhileYoureUpCompatibility;
 
-[HarmonyPatch(typeof(JobDriver_HaulToCell), "TryMakePreToilReservations")]
+[HarmonyPatch(typeof(JobDriver_HaulToCell), "MakeNewToils")]
 [UsedImplicitly]
 public class WhileYoureUpCompatibilityPatch
 {
-    /// <summary>
-    /// Compatibility for: While You're Up (1.6 patch)
-    /// </summary>
-    /// <param name="__instance"></param>
-    /// <param name="__result"></param>
     [UsedImplicitly]
-    static void Postfix(JobDriver_HaulToCell __instance, ref bool __result)
+    static void Prefix(JobDriver_HaulToCell __instance)
     {
-        if (__instance.ToHaul.GetDontMoved())
+        __instance.FailOn((Condition));
+
+        bool Condition()
         {
-            __result = false;
+            return __instance.ToHaul.GetDontMoved();
         }
     }
 }
