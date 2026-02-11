@@ -16,6 +16,7 @@ public class PatchMain
 }
 
 [HarmonyPatch(typeof(PickUpAndHaul.WorkGiver_HaulToInventory), "OkThingToHaul")]
+[UsedImplicitly]
 public class Patch_ThingWithMarkerIsNotOK
 {
     [HarmonyPostfix]

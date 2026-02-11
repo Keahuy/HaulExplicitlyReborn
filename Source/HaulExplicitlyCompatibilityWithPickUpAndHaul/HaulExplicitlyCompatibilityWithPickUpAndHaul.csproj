@@ -8,11 +8,11 @@
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-      <OutputPath>F:\Steam\steamapps\common\RimWorld\Mods\HaulExplicitlyReborn\ModCompatibility\PickUpAndHaul\Assemblies</OutputPath>
+      <OutputPath>..\..\ModCompatibility\PickUpAndHaul\Assemblies\</OutputPath>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <OutputPath>F:\Steam\steamapps\common\RimWorld\Mods\HaulExplicitlyReborn\ModCompatibility\PickUpAndHaul\Assemblies</OutputPath>
+      <OutputPath>..\..\ModCompatibility\PickUpAndHaul\Assemblies\</OutputPath>
     </PropertyGroup>
 
     <ItemGroup>

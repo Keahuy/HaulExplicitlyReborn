@@ -8,17 +8,17 @@
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-      <OutputPath>F:\Steam\steamapps\common\RimWorld\Mods\HaulExplicitlyReborn\Assemblies\</OutputPath>
+      <OutputPath>..\..\Assemblies\</OutputPath>
       <Optimize>true</Optimize>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <OutputPath>F:\Steam\steamapps\common\RimWorld\Mods\HaulExplicitlyReborn\Assemblies\</OutputPath>
+      <OutputPath>..\..\Assemblies\</OutputPath>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Krafs.Rimworld.Ref" Version="1.6.4566" />
-      <PackageReference Include="Lib.Harmony" Version="2.4.1" />
+      <PackageReference Include="Lib.Harmony.Ref" Version="2.4.2" />
     </ItemGroup>
 
 </Project>

@@ -20,13 +20,13 @@ public class PleaseDontHaulNearbySmoothly
             Log.Error("[HaulExplicitly] TargetMethod failed: Could not find display class.");
             return null;
         }
-        
+
         var method = displayClass.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).FirstOrDefault(m => m.Name.Contains("DupeValidator"));
         if (method == null)
         {
             Log.Error("[HaulExplicitly] TargetMethod failed: Could not find DupeValidator method.");
         }
-        
+
         return method;
     }
 
