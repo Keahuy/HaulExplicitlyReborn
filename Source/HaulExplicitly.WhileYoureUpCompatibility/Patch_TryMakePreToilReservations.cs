@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using HaulExplicitly.Extension;
 using JetBrains.Annotations;
-using Verse;
 using Verse.AI;
 
 namespace HaulExplicitly.WhileYoureUpCompatibility;

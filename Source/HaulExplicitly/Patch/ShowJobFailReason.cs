@@ -13,13 +13,6 @@ public class ShowJobFailReason
     [UsedImplicitly]
     static void ChangeJobFailReason(Thing t)
     {
-        if (t.GetDontMoved())
-        {
-            HaulAIUtility.NoEmptyPlaceLowerTrans = "HaulExplicitly.ThisItemHasBeenSetDontHaul".Translate();
-        }
-        else
-        {
-            HaulAIUtility.NoEmptyPlaceLowerTrans = "NoEmptyPlaceLower".Translate();
-        }
+        HaulAIUtility.NoEmptyPlaceLowerTrans = t.GetDontMoved() ? "HaulExplicitly.ThisItemHasBeenSetDontHaul".Translate() : "NoEmptyPlaceLower".Translate();
     }
 }

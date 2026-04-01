@@ -1,8 +1,5 @@
-﻿using HaulExplicitly.AI;
-using RimWorld;
-using UnityEngine;
+﻿using UnityEngine;
 using Verse;
-using Verse.AI;
 
 namespace HaulExplicitly.Gizmo;
 
@@ -30,7 +27,7 @@ public class Command_Cancel_HaulExplicitly : Command
 
     public static bool RelevantToThing(Thing t)
     {
-        return GameComponent_HaulExplicitly.GetManager(t) != null ? GameComponent_HaulExplicitly.GetManager(t).DataWithItem(t) != null : false;
+        return GameComponent_HaulExplicitly.GetManager(t).DataWithItem(t) != null ;
     }
 
     

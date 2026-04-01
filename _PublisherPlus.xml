@@ -2,7 +2,9 @@
 <Configuration>
   <Excluded>
     <exclude>.git</exclude>
-    <exclude>qodana.yaml</exclude>
+    <exclude>Assemblies\net48\HaulExplicitly.pdb</exclude>
+    <exclude>ModCompatibility\PickUpAndHaul\Assemblies\net48\HaulExplicitly.PickUpAndHaulCompatibility.pdb</exclude>
+    <exclude>ModCompatibility\WhileYoureUp\Assemblies\net48\HaulExplicitly.WhileYoureUpCompatibility.pdb</exclude>
     <exclude>Source</exclude>
     <exclude>Textures\Buttons\AutoForbiddenAfterHaulExplicitlyForbid.dds.zstd</exclude>
     <exclude>Textures\Buttons\AutoForbiddenAfterHaulExplicitlyNoForbid.dds.zstd</exclude>

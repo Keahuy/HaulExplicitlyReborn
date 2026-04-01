@@ -17,7 +17,7 @@ public class PleaseDontCompressMyChunk
         var items = records.SelectMany(r => r.items);
         foreach (var item in items)
         {
-            ((HashSet<Thing>)__instance.GetType().GetField("referencedThings", AccessTools.all).GetValue(__instance)).Add(item);
+            ((HashSet<Thing>?)__instance.GetType().GetField("referencedThings", AccessTools.all)?.GetValue(__instance))?.Add(item);
         }
     }
 }
