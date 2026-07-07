@@ -67,7 +67,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
     {
         Scribe_Values.Look(ref _id, "dataId");
         Scribe_References.Look(ref _map, "map", true);
-        Scribe_Collections.Look(ref inventory, "inventory", LookMode.Deep); // 🤔inventory 是历史遗留问题，为了不让订阅者报错，暂时不改了
+        Scribe_Collections.Look(ref inventory, "inventory", LookMode.Deep); // inventory 是历史遗留问题，为了不让订阅者报错，暂时不改了
         Scribe_Collections.Look(ref destinations, "destinations", LookMode.Value);
         Scribe_Values.Look(ref cursor, "cursor");
         Scribe_Values.Look(ref center, "center");
@@ -80,7 +80,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
         }
     }
 
-    // 🤔有人报告了以下报错
+    // 有人报告了以下报错
     /*
      Exception while saving HaulExplicitly.GameComponent_HaulExplicitly: System.NullReferenceException: Object reference not set to an instance of an object
     [Ref ADF29D53]
@@ -213,13 +213,12 @@ public class Data_DesignatorHaulExplicitly : IExposable
     {
         if (!c.InBounds(Map)
             || c.Fogged(Map)
-            /*|| c.InNoZoneEdgeArea(Map)*/ // 🤔我认为没必要限制不能向地图边界搬运
             || c.GetTerrain(Map).passability == Traversability.Impassable
-           ) return false; // 🤔目前不同搬运任务的目标地点可以重叠，但一些不同的物品显然是不能重叠的，能否设计一下自动识别空闲的格子，自动识别可堆叠的物品，当鼠标强制点击不空闲的格子时左上角提示
-        return Map.thingGrid.ThingsAt(c).All(t => t.def.CanOverlapZones && t.def.passability != Traversability.Impassable /*&& !t.def.IsDoor 🤔也没必要限制不能运向门，左上角弹一个消息警告一下就好了，最好能在搬运前标记一下是哪个物品*/);
+           ) return false;
+        return Map.thingGrid.ThingsAt(c).All(t => t.def.CanOverlapZones && t.def.passability != Traversability.Impassable);
     }
 
-    private IEnumerable<IntVec3> PossibleItemDestinationsAtCursor(Vector3 c) // 🤔此方法迭代了整个地图，真的有必要吗？
+    private IEnumerable<IntVec3> PossibleItemDestinationsAtCursor(Vector3 c)
     {
         IntVec3 cursorCell = new IntVec3(c);
         var cardinals = new[] { IntVec3.North, IntVec3.South, IntVec3.East, IntVec3.West };
@@ -229,7 +228,6 @@ public class Data_DesignatorHaulExplicitly : IExposable
         {
             available.Add(cursorCell);
         }
-        //🤔意思是鼠标所在格子不行，就不找周围的格子了？如果是，看看需不需要加一个再往外多找一圈格子的功能，自动找格子的话优先本房间内的格子
 
         while (available.Count > 0)
         {
@@ -238,7 +236,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
             foreach (IntVec3 intVec3 in available)
             {
                 float dist = (intVec3.ToVector3Shifted() - c).magnitude;
-                if (!(dist < nearestDist)) continue; //🤔为什么 nearestDist 的初始值为 1
+                if (!(dist < nearestDist)) continue;
                 nearest = intVec3;
                 nearestDist = dist;
             }
@@ -273,8 +271,8 @@ public class Data_DesignatorHaulExplicitly : IExposable
         foreach (Thing thing in things)
         {
             if (!thing.def.CanOverlapZones // thing 上面不能画储存区、种植区之类的
-                || (thing.def.entityDefToBuild != null && thing.def.entityDefToBuild.passability != Traversability.Standable) // 🤔
-                || (thing.def.surfaceType == SurfaceType.None && thing.def.passability != Traversability.Standable)) return null; // 🤔
+                || (thing.def.entityDefToBuild != null && thing.def.entityDefToBuild.passability != Traversability.Standable)
+                || (thing.def.surfaceType == SurfaceType.None && thing.def.passability != Traversability.Standable)) return null;
             if (thing.def.EverStorable(false))
             {
                 result.Add(thing);
@@ -295,7 +293,6 @@ public class Data_DesignatorHaulExplicitly : IExposable
         // 使用 HaulExplicitly 命令时
         cursor = c;
         int minStacks = inventory.Sum(record => record.NumStacksWillUse);
-        // 🤔
         InventoryResetMerge();
         var destinationsLocal = new List<IntVec3>();
         foreach (var cell in PossibleItemDestinationsAtCursor(c)) // 此步从鼠标所在格子开始迭代了整个地图的格子用来判断可用的格子
@@ -310,7 +307,7 @@ public class Data_DesignatorHaulExplicitly : IExposable
             else
             {
                 Thing item = itemsInCell.First();
-                if (itemsInCell.Count != 1 || _items.Contains(item)) continue; // 🤔 对吗？itemsInCell有没有可能>1
+                if (itemsInCell.Count != 1 || _items.Contains(item)) continue;
                 foreach (var record in inventory.Where(record => record.CanAdd(item) && item.stackCount != item.def.stackLimit))
                 {
                     destinationsLocal.Add(cell);

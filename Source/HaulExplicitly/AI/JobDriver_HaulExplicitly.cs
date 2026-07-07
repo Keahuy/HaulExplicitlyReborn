@@ -91,7 +91,7 @@ public class JobDriver_HaulExplicitly : JobDriver
 
             IntVec3 dest = actorCurJob.GetTarget(TargetIndex.B).Cell;
             List<Thing>? itemsInCell = Data_DesignatorHaulExplicitly.GetItemsIfValidItemSpot(toil.actor.Map, dest);
-            if (itemsInCell == null) return true;
+            if (itemsInCell == null) return true; // 返回 true 来终止toil
             switch (itemsInCell.Count)
             {
                 case 0:

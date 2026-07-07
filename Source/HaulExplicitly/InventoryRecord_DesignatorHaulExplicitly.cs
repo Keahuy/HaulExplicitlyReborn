@@ -115,7 +115,6 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
     public string Label => GenLabel.ThingLabel(MiniDef ?? ItemDef, ItemStuff, SetQuantity).CapitalizeFirst();
 
 
-    // 需要占用的物品堆数 🤔不太明白
     public int NumStacksWillUse => StacksWorth(ItemDef, Math.Max(0, SetQuantity - MergeCapacity)) + NumMergeStacksWillUse;
 
     // 将会存储不同堆不同ID的同种物品
@@ -242,7 +241,7 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
 
     public int GetNumRemainingToHaul()
     {
-        var pawnsList = new List<Pawn>(ParentData.Map.mapPawns.PawnsInFaction(Faction.OfPlayer)); // 🤔不如加个是否能从事搬运工作的判断
+        var pawnsList = new List<Pawn>(ParentData.Map.mapPawns.PawnsInFaction(Faction.OfPlayer));
         int beingHauledNow = 0;
         foreach (Pawn p in pawnsList)
         {

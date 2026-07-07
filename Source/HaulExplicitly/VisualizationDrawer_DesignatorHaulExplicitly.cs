@@ -54,7 +54,7 @@ class Thing_DrawExtraSelectionOverlays_Patch
     {
         if (__instance.def.EverHaulable)
         {
-            HaulExplicitlyPostingVisualizationDrawer.DrawForItem(__instance);// 🤔
+            HaulExplicitlyPostingVisualizationDrawer.DrawForItem(__instance);
         }
     }
 }
@@ -66,6 +66,6 @@ class SelectionDrawer_DrawSelectionOverlays_Patch
     [UsedImplicitly]
     static void Postfix()
     {
-        HaulExplicitlyPostingVisualizationDrawer.Clear();// 🤔
+        HaulExplicitlyPostingVisualizationDrawer.Clear();
     }
 }
