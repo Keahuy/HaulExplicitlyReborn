@@ -4,9 +4,9 @@ using Verse;
 namespace HaulExplicitly.Patch;
 
 [StaticConstructorOnStartup]
-public class PatchMain
+public class HarmonyInit
 {
-    static PatchMain()
+    static HarmonyInit()
     {
         var harmony = new Harmony("likeafox.rimworld.haulexplicitly");
         harmony.PatchAll();
