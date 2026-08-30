@@ -17,8 +17,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Krafs.Rimworld.Ref" Version="1.6.4566" />
+      <PackageReference Include="Krafs.Rimworld.Ref" Version="1.6.4871" />
       <PackageReference Include="Lib.Harmony.Ref" Version="2.4.2" />
+      <PackageReference Include="ZLinq" Version="1.5.6" />
     </ItemGroup>
 
 </Project>
