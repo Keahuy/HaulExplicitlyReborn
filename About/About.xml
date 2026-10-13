@@ -7,7 +7,7 @@
     </authors>
     <packageId>likeafox.haulexplicitly</packageId>
     <url>https://github.com/Keahuy/HaulExplicitlyReborn</url>
-    <modVersion>1.0.4</modVersion>
+    <modVersion>1.0.5</modVersion>
     <supportedVersions>
         <li>1.6</li>
         <li>1.7</li>
