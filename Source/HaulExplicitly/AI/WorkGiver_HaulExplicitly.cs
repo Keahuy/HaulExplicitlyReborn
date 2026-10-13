@@ -1,4 +1,4 @@
-﻿using RimWorld;
+using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.AI;
@@ -46,6 +46,7 @@ public class WorkGiver_HaulExplicitly : WorkGiver_Scanner
     /// <summary>
     /// 为指定物品生成一次显式搬运工作：校验可达性与占用情况，计算本次愿意搬运的数量和可用的目的地格子，
     /// 并把数据 ID、目的地剩余承载能力、后续目的地格子分别编码进工作的目标队列。
+    /// 若该物品所属的搬运工作已经全部搬完，则改为收尾：解除本次搬运中没搬走的剩余物品的「禁止搬运」标记。
     /// </summary>
     /// <param name="pawn">执行工作的殖民者。</param>
     /// <param name="t">要搬运的物品。</param>
@@ -60,9 +61,14 @@ public class WorkGiver_HaulExplicitly : WorkGiver_Scanner
         if (data == null) return null;
         
         var record = data.GetRecordWhichWithItem(t);
-        if (record.MovedQuantity == record.SetQuantity)
+        if (record == null) return null; // 物品已从搬运记录中移除，跳过
+        if (record.IsDone)
         {
-            data.TryRemoveItem(t, true, true);
+            // 设定数量已经全部搬到目的地：收尾，把没搬走的剩余物品移出本次搬运工作
+            // 并解除「禁止搬运」，让它们恢复自由搬运。
+            // 还有殖民者正把手上的物品搬向目的地时收尾会失败，此时留到他们放下后（下一次扫描）再收尾，
+            // 不能在这里把余量移出搬运工作，否则它会被留在「禁止搬运」状态。
+            record.TryFinishHaulJob();
             return null;
         }
 

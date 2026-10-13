@@ -22,7 +22,7 @@
     </ItemGroup>
 
     <Target Name="CopyToExtraDirectories" AfterTargets="Build">
-        <Exec Command="xcopy &quot;$(TargetDir)HaulExplicitly.dll&quot; &quot;..\..\..\1.7\Assemblies\net48\&quot; /Y /S" />
+        <Exec Command="xcopy &quot;$(TargetDir)HaulExplicitly.dll&quot; &quot;..\..\1.7\Assemblies\net48\&quot; /Y /S" />
     </Target>
 
 </Project>

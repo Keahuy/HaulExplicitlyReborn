@@ -1,4 +1,4 @@
-﻿using HaulExplicitly.Extension;
+using HaulExplicitly.Extension;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -137,6 +137,8 @@ public class Toils_HaulExplicitly
                 {
                     carriedItem.SetDontMoved(true);
                 }
+
+                TryFinishHaulJob(driver);
             }
             else
             {
@@ -172,5 +174,20 @@ public class Toils_HaulExplicitly
             }
         };
         return toil;
+    }
+
+    /// <summary>
+    /// 在物品成功放到目的地之后检查本次搬运是否已全部完成：是则收尾，
+    /// 把没搬走的剩余物品移出本次搬运工作并解除其「禁止搬运」标记。
+    /// </summary>
+    /// <param name="driver">刚放下物品的显式搬运工作驱动器。</param>
+    /// <remarks>
+    /// 物品无法正常放下（目的地失效、只能搬到一旁）时不调用本方法：
+    /// 此时设定数量尚未搬完，仍应由工作分配器继续尝试搬运；
+    /// 收尾工作也可能由 <c>WorkGiver_HaulExplicitly</c> 在无人搬运该记录时触发。
+    /// </remarks>
+    private static void TryFinishHaulJob(JobDriver_HaulExplicitly driver)
+    {
+        driver.record.TryFinishHaulJob();
     }
 }

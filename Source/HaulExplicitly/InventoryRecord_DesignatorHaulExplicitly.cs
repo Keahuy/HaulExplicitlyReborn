@@ -1,4 +1,4 @@
-﻿using HaulExplicitly.AI;
+using HaulExplicitly.AI;
 using RimWorld;
 using Verse;
 
@@ -99,6 +99,12 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
     /// 已经搬运到目的地的物品数量。
     /// </summary>
     public int MovedQuantity;
+
+    /// <summary>
+    /// 本记录是否已经搬完：设定数量已经全部搬运到目的地。
+    /// 注意这不代表搬运工作已经收尾——可能还有殖民者正把手上的物品搬向目的地。
+    /// </summary>
+    public bool IsDone => MovedQuantity == SetQuantity;
 
     private ThingDef? _miniDef;
 
@@ -336,6 +342,17 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
     /// <returns>剩余需要搬运的数量，最小为 0。</returns>
     public int GetNumRemainingToHaul()
     {
+        int beingHauledNow = GetNumBeingHauledNow();
+
+        return Math.Max(0, SetQuantity - (MovedQuantity + beingHauledNow));
+    }
+
+    /// <summary>
+    /// 统计正由殖民者搬运（已拿起、尚未放到目的地）的本记录物品数量。
+    /// </summary>
+    /// <returns>正在被搬运的物品数量；无人搬运时为 0。</returns>
+    private int GetNumBeingHauledNow()
+    {
         var pawnsList = new List<Pawn>(ParentData.Map.mapPawns.PawnsInFaction(Faction.OfPlayer));
         int beingHauledNow = 0;
         foreach (Pawn p in pawnsList)
@@ -351,6 +368,48 @@ public class InventoryRecord_DesignatorHaulExplicitly : IExposable
             }
         }
 
-        return Math.Max(0, SetQuantity - (MovedQuantity + beingHauledNow));
+        return beingHauledNow;
+    }
+
+    /// <summary>
+    /// 在整条搬运工作收尾时清场：当设定数量已全部搬到目的地、且没有殖民者还在搬运本记录时，
+    /// 把本次工作中「没搬走的那部分剩余物品」从搬运数据中移除并解除「禁止搬运」标记，
+    /// 使它们重新可以被自由搬运，然后删除本记录。
+    /// </summary>
+    /// <returns>
+    /// 本次调用完成了收尾（或本记录早已收尾）返回 <c>true</c>；
+    /// 尚未搬完（<see cref="IsDone"/> 为 <c>false</c>）或仍有殖民者正在搬运时返回 <c>false</c>。
+    /// </returns>
+    /// <remarks>
+    /// 之所以要求「无人在搬」：物品被拿起时已经先从本记录移除，所以扣除在途数量后的剩余量
+    /// 才是真正没搬走的余量。只有等待在途物品全部放下，才能安全地清掉余量并删除记录。
+    /// 调用后本记录即从所属 <see cref="Data_DesignatorHaulExplicitly.inventory"/> 中移除，不可再使用。
+    /// </remarks>
+    public bool TryFinishHaulJob()
+    {
+        if (!IsDone || GetNumBeingHauledNow() > 0) return false;
+
+        Data_DesignatorHaulExplicitly data = ParentData;
+
+        // 玩家把搬运数量调小后，剩下没搬走的物品（仍在原地、且记录里没被移除的那部分）应当恢复自由搬运
+        var leftoverItems = new List<Thing>(items);
+        foreach (Thing leftover in leftoverItems)
+        {
+            if (leftover.Destroyed) continue;
+
+            // 走标准移除流程：既清掉 InventoryRecord / Data 里的记录，也解除「禁止搬运」标记
+            data.TryRemoveItem(leftover);
+
+            // 与搬运数据无关的禁止状态（例如自动禁止、玩家手动禁止）也一并清除，避免余量继续卡在禁止状态
+            if (leftover is ThingWithComps twc && twc.GetComp<CompForbiddable>() != null)
+            {
+                leftover.SetForbidden(false);
+            }
+        }
+
+        items.Clear();
+        data.inventory.Remove(this);
+
+        return true;
     }
 }

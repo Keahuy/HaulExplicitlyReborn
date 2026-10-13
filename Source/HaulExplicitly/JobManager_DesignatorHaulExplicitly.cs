@@ -1,4 +1,4 @@
-﻿using Verse;
+using Verse;
 
 namespace HaulExplicitly;
 
@@ -43,10 +43,21 @@ public class JobManager_DesignatorHaulExplicitly : IExposable
     }
 
     /// <summary>
-    /// 清理失效数据：删除被摧毁物品的记录，并移除「已搬运数量等于设定数量」即已完成的搬运数据。
+    /// 清理失效数据：先让已搬完且无人在搬的搬运记录收尾（解除没搬走的剩余物品的「禁止搬运」标记），
+    /// 再删除被摧毁物品的记录，并移除「已搬运数量等于设定数量」即已完成的搬运数据。
     /// </summary>
     public void CleanGarbage()
     {
+        // 先对已经搬完的记录收尾：把没搬走的剩余物品移出搬运工作并恢复自由搬运
+        foreach (Data_DesignatorHaulExplicitly data in datas.Values.ToList())
+        {
+            foreach (InventoryRecord_DesignatorHaulExplicitly record in data.inventory.ToList())
+            {
+                if (!record.IsDone) continue;
+                record.TryFinishHaulJob();
+            }
+        }
+
         var keys = new List<int>(datas.Keys);
         foreach (int k in keys)
         {
