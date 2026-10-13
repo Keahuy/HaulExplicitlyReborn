@@ -5,15 +5,25 @@ using Verse;
 
 namespace HaulExplicitly.Gizmo;
 
+/// <summary>
+/// 「显式搬运」设计器：玩家选中物品后，用它在地图上指定搬运目的地并生成
+/// <see cref="Data_DesignatorHaulExplicitly"/>；同时负责绘制目的地预览与左下角的待搬运物品列表。
+/// </summary>
 public class Designator_HaulExplicitly : Designator
 {
     private static Data_DesignatorHaulExplicitly? data;
 
+    /// <summary>
+    /// 清空当前正在编辑的搬运数据（提交或结束一次设计时调用）。
+    /// </summary>
     public static void ResetJob()
     {
         data = null;
     }
 
+    /// <summary>
+    /// 依据玩家当前选中的物品，新建一条搬运数据。
+    /// </summary>
     public static void UpdateJob()
     {
         // 获取所有选中的物品
@@ -21,6 +31,9 @@ public class Designator_HaulExplicitly : Designator
         data = new Data_DesignatorHaulExplicitly(objects);
     }
     
+    /// <summary>
+    /// 初始化设计器按钮：标签、图标、说明、拖动与成功音效等。
+    /// </summary>
     public Designator_HaulExplicitly()
     {
         defaultLabel = "HaulExplicitly.HaulExplicitlyLabel".Translate();
@@ -33,6 +46,9 @@ public class Designator_HaulExplicitly : Designator
         hotKey = null;
     }
     
+    /// <summary>
+    /// 设计器被选中时调用：清除上一次遗留的数据，并根据当前选择重建搬运数据。
+    /// </summary>
     public override void Selected()
     {
         // 清除上一次使用（可能）遗留的Data
@@ -41,11 +57,18 @@ public class Designator_HaulExplicitly : Designator
         UpdateJob();
     }
     
+    /// <summary>
+    /// 判断设计器是否可以继续保持选中状态。
+    /// </summary>
+    /// <returns>当前存在待编辑的搬运数据时返回 <c>true</c>。</returns>
     public override bool CanRemainSelected()
     {
         return data != null;
     }
     
+    /// <summary>
+    /// 每帧刷新时调用：依据鼠标位置重新计算目的地，并把可用的目的地格子绘制为高亮平面。
+    /// </summary>
     public override void SelectedUpdate()
     {
         if (data == null) return;
@@ -57,11 +80,20 @@ public class Designator_HaulExplicitly : Designator
         }
     }
     
+    /// <summary>
+    /// 判断某个格子能否作为设计目标，即当前位置是否能够算出足够的目的地。
+    /// </summary>
+    /// <param name="loc">被检查的格子。</param>
+    /// <returns>表示是否允许在此格设计的 <see cref="AcceptanceReport"/>。</returns>
     public override AcceptanceReport CanDesignateCell(IntVec3 loc)
     {
         return data != null && data.TryMakeDestinations(UI.MouseMapPosition());
     }
     
+    /// <summary>
+    /// 玩家点击时提交搬运指令：重新计算一次目的地，把数据登记到游戏组件，并结束本次设计。
+    /// </summary>
+    /// <param name="c">被点击的格子。</param>
     public override void DesignateSingleCell(IntVec3 c)
     {
         Data_DesignatorHaulExplicitly dataLocal = data ?? throw new InvalidOperationException();
@@ -74,6 +106,11 @@ public class Designator_HaulExplicitly : Designator
     private float _guiLastDrawnHeight;
 
     // 显示左下角待搬运物品列表
+    /// <summary>
+    /// 在界面左下角绘制待搬运物品列表：每行显示图标与名称，数量大于 1 时提供按钮打开数量调节滑块。
+    /// </summary>
+    /// <param name="leftX">绘制区域左边界。</param>
+    /// <param name="bottomY">绘制区域下边界。</param>
     public override void DoExtraGuiControls(float leftX, float bottomY)
     {
         Data_DesignatorHaulExplicitly dataLocal = data ?? throw new InvalidOperationException();

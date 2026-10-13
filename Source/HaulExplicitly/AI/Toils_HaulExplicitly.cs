@@ -6,9 +6,20 @@ using Verse.AI;
 
 namespace HaulExplicitly.AI;
 
+/// <summary>
+/// 显式搬运工作用到的自定义 Toil（工作步骤）：拾取物品、在目的地放下物品。
+/// </summary>
 public class Toils_HaulExplicitly
 {
-    public static Toil PickUpThing(TargetIndex haulxItemInd, Toil nextToilIfBeingOpportunistic)
+    /// <summary>
+    /// 创建「拾取物品」步骤：按工作剩余数量与殖民者背包剩余空间拿起目标物品的一部分，
+    /// 把拿起的这一堆登记回搬运记录；若本工作允许顺手搬运同类物品
+    /// （<c>haulOpportunisticDuplicates</c>），还会寻找附近可搬运的同类物品，
+    /// 为它预约目的地并把数量与目的地并入当前工作。
+    /// </summary>
+    /// <param name="haulxItemInd">目标队列中指向待搬运物品的索引。</param>
+    /// <returns>可以加入工作流程的 Toil。</returns>
+    public static Toil PickUpThing(TargetIndex haulxItemInd)
     {
         Toil toil = ToilMaker.MakeToil();
         toil.initAction = delegate
@@ -78,6 +89,14 @@ public class Toils_HaulExplicitly
         return toil;
     }
 
+    /// <summary>
+    /// 创建「在目的地放下物品」步骤：把手上的物品放到当前目的地格上，累加已搬运数量、
+    /// 标记该物品已到达显式搬运目的地，并按需将其禁用；若一次放不完，则改用队列中的下一个
+    /// 目的地格子继续放置；已无处可放时把物品搬到一旁，实在不行则销毁并记录错误。
+    /// </summary>
+    /// <param name="destInd">目的地（或目的地队列）在目标队列中的索引。</param>
+    /// <param name="nextToilIfNotDonePlacing">未能一次放完时跳回的 Toil，通常就是搬运步骤本身；为 <c>null</c> 时不重试。</param>
+    /// <returns>可以加入工作流程的 Toil。</returns>
     public static Toil PlaceHauledThingAtDest(TargetIndex destInd, Toil? nextToilIfNotDonePlacing)
     {
         Toil toil = ToilMaker.MakeToil();
@@ -95,7 +114,6 @@ public class Toils_HaulExplicitly
             int carryBeforeCount = carriedItem.stackCount;
             Job job = actor.CurJob;
             var driver = (JobDriver_HaulExplicitly)actor.jobs.curDriver;
-            // driver.Init(); //this fixes problems
             IntVec3 destination = job.GetTarget(destInd).Cell;
 
             //put it down now
