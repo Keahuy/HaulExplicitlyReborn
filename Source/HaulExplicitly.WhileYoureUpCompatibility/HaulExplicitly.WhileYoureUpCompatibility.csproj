@@ -21,10 +21,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="HaulExplicitly">
-        <HintPath>..\..\Assemblies\net48\HaulExplicitly.dll</HintPath>
-        <Private>False</Private>
-      </Reference>
+      <ProjectReference Include="..\HaulExplicitly\HaulExplicitly.csproj">
+          <Private>False</Private>
+      </ProjectReference>
+        
     </ItemGroup>
 
 </Project>

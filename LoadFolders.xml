@@ -2,7 +2,14 @@
 <loadFolders>
     <v1.6>
         <li>/</li>
+        <li>1.6</li>
         <li IfModActive="mehni.pickupandhaul">ModCompatibility/PickUpAndHaul</li>
         <li IfModActive="zsbk.patch16.whileyoureup">ModCompatibility/WhileYoureUp</li>
     </v1.6>
+    <v1.7>
+        <li>/</li>
+        <li>1.7</li>
+        <li IfModActive="mehni.pickupandhaul">ModCompatibility/PickUpAndHaul</li>
+        <li IfModActive="zsbk.patch16.whileyoureup">ModCompatibility/WhileYoureUp</li>
+    </v1.7>
 </loadFolders>

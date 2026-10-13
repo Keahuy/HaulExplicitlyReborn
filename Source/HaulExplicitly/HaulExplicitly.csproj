@@ -8,17 +8,21 @@
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-      <OutputPath>..\..\Assemblies\</OutputPath>
+        <OutputPath>..\..\1.6\Assemblies\</OutputPath>
       <Optimize>true</Optimize>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <OutputPath>..\..\Assemblies\</OutputPath>
+      <OutputPath>..\..\1.6\Assemblies\</OutputPath>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Krafs.Rimworld.Ref" Version="1.6.4871" />
       <PackageReference Include="Lib.Harmony.Ref" Version="2.4.2" />
     </ItemGroup>
+
+    <Target Name="CopyToExtraDirectories" AfterTargets="Build">
+        <Exec Command="xcopy &quot;$(TargetDir)HaulExplicitly.dll&quot; &quot;..\..\..\1.7\Assemblies\net48\&quot; /Y /S" />
+    </Target>
 
 </Project>
