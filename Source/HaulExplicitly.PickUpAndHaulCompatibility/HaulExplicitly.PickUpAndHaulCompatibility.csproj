@@ -1,23 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net48</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>14</LangVersion>
     </PropertyGroup>
 
-    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-        <OutputPath>..\..\ModCompatibility\PickUpAndHaul\Assemblies\</OutputPath>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-        <OutputPath>..\..\ModCompatibility\PickUpAndHaul\Assemblies\</OutputPath>
-    </PropertyGroup>
+    <!-- <PropertyGroup Condition=" '$(Configuration)' == 'Debug' "> -->
+    <!--     <OutputPath>..\..\ModCompatibility\PickUpAndHaul\Assemblies\</OutputPath> -->
+    <!-- </PropertyGroup> -->
+    
+    <!-- <PropertyGroup Condition=" '$(Configuration)' == 'Release' "> -->
+    <!--     <OutputPath>..\..\ModCompatibility\PickUpAndHaul\Assemblies\</OutputPath> -->
+    <!-- </PropertyGroup> -->
 
     <ItemGroup>
         <PackageReference Include="Krafs.Rimworld.Ref" Version="1.6.4871"/>
-        <PackageReference Include="Lib.Harmony.Ref" Version="2.4.2"/>
+        <PackageReference Include="Lib.Harmony.Ref" Version="2.4.3"/>
     </ItemGroup>
 
     <ItemGroup>
